@@ -4,7 +4,7 @@
 #define BLACK 0 // define the value for black pixels
 #define CHUNK_SIZE 1024 // define the size of the chunks to read and write
 
-int main(inputFile, outputFile) {
+int black_and_white_filter(inputFile, outputFile) {
     FILE *fileIn = fopen(inputFile, "rb"); // open the input file for reading in binary mode
     FILE *fileOut = fopen(outputFile, "wb+"); // create the output file for writing in binary mode
     int i; // variable to iterate through the image data
@@ -50,6 +50,6 @@ int main(inputFile, outputFile) {
     // close the input and output files
     fClose(fileIn);
     fclose(fileOut);
-
+    // exit
     return 0;
 }
