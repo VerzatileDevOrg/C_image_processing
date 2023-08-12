@@ -1,13 +1,13 @@
 #include <stdio.h>
-#define THRESHOLD 128 // define tha value of the threshold for black and white
-#define WHITE 255 // define the value for white pixels
-#define BLACK 0 // define the value for black pixels
+#include <stdlib.h>
+#define MAX_COLOR 255 // define the maximum color value
+#define BRIGHTNESS 25 // define the brightness factor
 #define CHUNK_SIZE 1024 // define the size of the chunks to read and write
 
-int black_and_white_filter(inputFile, outputFile) {
-    FILE *fileIn = fopen(inputFile, "rb"); // open the input file for reading in binary mode
-    FILE *fileOut = fopen(outputFile, "wb+"); // create the output file for writing in binary mode
-    int i; // variable to iterate through the image data
+int bright_filter(inputFile, outputFile) {
+    FILE *fileIn = fopen(inputFile, "r");  // open the input file
+    File *fileOut = fopen(outputFile, "w"); // create the output file
+    int i; // variable to iterate
     unsigned char byte[54]; // array to store the header information of the image
     unsigned char colorTable[1024]; // array to store the color table of the image
     // check if the input file exists
@@ -39,15 +39,18 @@ int black_and_white_filter(inputFile, outputFile) {
     while(!feof(fileIn)) {
         // read a chunk of image data from the input file
         size_t bytesRead = fread(buffer, sizeof(unsigned char), CHUNK_SIZE, fileIn);
-        // apply the threshold to each pixel in the chunk
+        // apply the brightness factor to each pixel in the chunk
         for(i = 0; i < bytesRead; i++) {
+            buffer[i] = buffer[i] + BRIGHTNESS;
             buffer[i] = (buffer[i] > THRESHOLD)
-                        ? WHITE
-                        : BLACK;
+                        ? MAX_COLOR
+                        : ;
         }
         // write the thresholded image data to the output file
         fwrite(buffer, sizeof(unsigned char), bytesRead, fileOut);
     }
+    // write the thresholded image data to the output file
+    fwrite(buffer, sizeof(unsigned char), size, fileOut);
     // close the input and output files
     fClose(fileIn);
     fclose(fileOut);
