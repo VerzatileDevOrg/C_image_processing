@@ -4,6 +4,7 @@
 
 int negative_filter(inputFile, outputFile) {
     FILE* fileIn= fopen(inputFile, "rb"); // open the input file for reading in binary mode
+    File *fileOut = fopen(outputFile, "wb+"); // create the output file
     // declare variables to store the image data and header information
     unsigned char *imageData;
     unsigned char *newImageData;

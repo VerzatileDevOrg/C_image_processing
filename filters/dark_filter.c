@@ -1,10 +1,7 @@
 #include <stdio.h>
-#include <stdlib.h>
-#define MAX_COLOR 255 // define the maximum color value
-#define BRIGHTNESS 25 // define the brightness factor
-#define CHUNK_SIZE 1024 // define the size of the chunks to read and write
+#define THRESHOLD 40 // define the threshold value for darkness
 
-int bright_filter(inputFile, outputFile) {
+int dark_filter(inputFile, outputFile) {
     FILE *fileIn = fopen(inputFile, "rb");  // open the input file
     File *fileOut = fopen(outputFile, "wb+"); // create the output file
     int i; // variable to iterate
@@ -39,9 +36,9 @@ int bright_filter(inputFile, outputFile) {
     while(!feof(fileIn)) {
         // read a chunk of image data from the input file
         size_t bytesRead = fread(buffer, sizeof(unsigned char), CHUNK_SIZE, fileIn);
-        // apply the brightness factor to each pixel in the chunk
+        // apply the darkness threshold to each pixel in the chunk
         for(i = 0; i < bytesRead; i++) {
-            buffer[i] = buffer[i] + BRIGHTNESS;
+            buffer[i] = buffer[i] + THRESHOLD;
             buffer[i] = (buffer[i] > THRESHOLD)
                         ? MAX_COLOR
                         : ;
