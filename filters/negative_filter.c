@@ -3,9 +3,17 @@
 #include <time.h>
 
 int negative_filter(const char *inputFile, const char *outputFile) {
-    FILE *fileIn = fopen(inputFile, "rb"); // open the input file for reading in binary mode
-    FILE *fileOut = fopen(outputFile, "wb+"); // create the output file
+    
+    FILE *fileIn = fopen(inputFile, "rb");
+    FILE *fileOut = fopen(outputFile, "wb+");
 
+    if (fileIn == NULL || fileOut == NULL) {
+        printf("File does not exist.\n");
+        if (fileIn != NULL) fclose(fileIn);
+        if (fileOut != NULL) fclose(fileOut);
+        return 1;
+    }
+    
     unsigned char *imageData;
     unsigned char *newImageData;
     unsigned char imageHeader[54];
@@ -13,7 +21,7 @@ int negative_filter(const char *inputFile, const char *outputFile) {
 
     int i, j;
     
-    // check if the input file exists
+    // check if input file exists
     fread(imageHeader, sizeof(unsigned char), 54, fileIn);
     int width = *(int*)&imageHeader[18];
     int height = *(int*)&imageHeader[22];
@@ -23,21 +31,21 @@ int negative_filter(const char *inputFile, const char *outputFile) {
     imageData = (unsigned char*)malloc(imageDataSize * sizeof(unsigned char));
     newImageData = (unsigned char*)malloc(imageDataSize * sizeof(unsigned char));
     
-    // check if the image has a color table
+    // check if image has a color table
     if (bitDepth <= 8) {
         fread(colorTable, sizeof(unsigned char), 1024, fileIn);
     }
     
     fread(imageData, sizeof(unsigned char), imageDataSize, fileIn);
 
-    // apply the negative filter to each pixel
+    // apply negative filter to each pixel
     unsigned char *p = imageData;
     unsigned char *q = newImageData;
     for (i = 0; i < height * width; i++) {
         *q++ = 255 - *p++;
     }
 
-    // write the image data to the output file
+    // write image data to output file
     fwrite(imageHeader, sizeof(unsigned char), 54, fileOut);
     if (bitDepth <= 8) {
         fwrite(colorTable, sizeof(unsigned char), 1024, fileOut);
@@ -48,9 +56,7 @@ int negative_filter(const char *inputFile, const char *outputFile) {
     fclose(fileIn);
     fclose(fileOut);
     
-    // free the memory allocated for the image data
     free(imageData);
     free(newImageData);
-    
     return 0;
 }

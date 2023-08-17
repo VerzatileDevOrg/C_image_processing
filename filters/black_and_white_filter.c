@@ -1,36 +1,37 @@
 #include <stdio.h>
-#define THRESHOLD 128 // define tha value of the threshold for black and white
-#define WHITE 255 // define the value for white pixels
-#define BLACK 0 // define the value for black pixels
-#define CHUNK_SIZE 1024 // define the size of the chunks to read and write
+#define THRESHOLD 128 // define value of threshold for black and white
+#define WHITE 255
+#define BLACK 0
+#define CHUNK_SIZE 1024 // define size of chunks to read and write
 
 int black_and_white_filter(const char *inputFile, const char *outputFile) {
-    FILE *fileIn = fopen(inputFile, "rb"); // open the input file for reading in binary mode
-    FILE *fileOut = fopen(outputFile, "wb+"); // create the output file for writing in binary mode
+    
+    FILE *fileIn = fopen(inputFile, "rb");
+    FILE *fileOut = fopen(outputFile, "wb+");
+
+    if (fileIn == NULL || fileOut == NULL) {
+        printf("File does not exist.\n");
+        if (fileIn != NULL) fclose(fileIn);
+        if (fileOut != NULL) fclose(fileOut);
+        return 1;
+    }
+
     int i;
     unsigned char byte[54];
     unsigned char colorTable[1024];
 
-    // check if the input file exists
-    if(fileIn == NULL) {
-        printf("File does not exist.\n");
-        return 1;
-    }
-
-    // read the header information of the image
+    // read header info of image
     for(i = 0; i < 54; i++) {
         byte[i] = getc(fileIn);
     }
 
-    // write the header information to the output file
+    // write header info to output file
     fwrite(byte, sizeof(unsigned char), 54, fileOut);
 
-    // extract the height, width and bitDepth of the image from the header information
+    // extract height, width and bitDepth of image from the header information
     int height = *(int*)&byte[18];
     int width = *(int*)&byte[22];
     int bitDepth = *(int*)&byte[28];
-
-    // calculate the size of the image in pixels
     int size = height * width;
 
     // check if the image has a color table
@@ -58,6 +59,7 @@ int black_and_white_filter(const char *inputFile, const char *outputFile) {
         // write the thresholded image data to the output file
         fwrite(buffer, sizeof(unsigned char), bytesRead, fileOut);
     }
+
     fclose(fileIn);
     fclose(fileOut);
     return 0;

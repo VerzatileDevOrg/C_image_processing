@@ -2,8 +2,24 @@
 #include "filters/negative_filter.c"
 
 int main() {
-    black_and_white_filter("assets/images/test_image.bmp", "assets/images/black_and_white_test_image.bmp");
-    negative_filter("assets/images/test_image.bmp", "assets/images/negative_test_image.bmp");
+    const char* inputFileName = "assets/images/test_image.bmp";
+    const char* outputFileName = "assets/images/output.bmp";
+
+    int result = black_and_white_filter(inputFileName, outputFileName);
+
+    switch (result) {
+    case 0:
+        printf("Black and white filtering completed successfully.\n");
+        break;
+    case 1:
+        printf("Error: Input file \"%s\" not found.\n", inputFileName);
+        break;
+    case 2:
+        printf("Error: Unable to create output file \"%s\".\n", outputFileName);
+        break;
+    default:
+        printf("Error: An unknown error occurred during filtering.\n");
+    }
 
     return 0;
 }
