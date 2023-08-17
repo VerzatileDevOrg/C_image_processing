@@ -3,7 +3,7 @@
 
 int sepia_filter(inputFile, outputFile) {
     FILE *fileIn = fopen(inputFile, "rb");  // open the input file
-    File *fileOut = fopen(outputFile, "wb+"); // create the output file
+    FILE *fileOut = fopen(outputFile, "wb+"); // create the output file
     int i, r, g, b;
     unsigned char byte[54];
     // check if the input file exists
@@ -23,7 +23,16 @@ int sepia_filter(inputFile, outputFile) {
     int bitDepth = *(int*)&byte[28];
     // calculate the size of the image in pixels
     int size = height * width;
-    unsigned char buffer[size][3];
+
+
+    unsigned char (*buffer)[3] = malloc(size * sizeof(*buffer));// store the image data
+    
+    // Flag to check if memory allocation was successful
+    if (buffer == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+    
     for(i = 0; i < size; i++) {
         r = 0;
         g = 0;

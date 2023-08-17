@@ -2,7 +2,7 @@
 
 int rgb_to_gray_filter(inputFile, outputFile) {
     FILE *fileIn = fopen(inputFile, "rb");  // open the input file
-    File *fileOut = fopen(outputFile, "wb+"); // create the output file
+    FILE *fileOut = fopen(outputFile, "wb+"); // create the output file
     int i, n, m; // i is the iterator, n is the height, m is the width
     unsigned char byte[54]; // store the header information
 
@@ -23,8 +23,16 @@ int rgb_to_gray_filter(inputFile, outputFile) {
     int bitDepth = *(int*)&byte[28];
     // calculate the size of the image in pixels
     int size = height * width;
-    // store the pixel data in buffer
-    unsigned char buffer[size][3];
+
+    unsigned char (*buffer)[3] = malloc(size * sizeof(*buffer)); // store the image data
+    
+    // Flag to check if memory allocation was successful
+    if (buffer == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+    
+    unsigned char y;
     for(i = 0; i < size; i ++) {
         y = 0;
         // red

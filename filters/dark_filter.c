@@ -1,9 +1,11 @@
 #include <stdio.h>
+#define MAX_COLOR 255  // define the maximum color value
 #define THRESHOLD 40 // define the threshold value for darkness
+#define CHUNK_SIZE 1024 // define the size of the chunks to read and write
 
 int dark_filter(inputFile, outputFile) {
     FILE *fileIn = fopen(inputFile, "rb");  // open the input file
-    File *fileOut = fopen(outputFile, "wb+"); // create the output file
+    FILE *fileOut = fopen(outputFile, "wb+"); // create the output file
     int i; // variable to iterate
     unsigned char byte[54]; // array to store the header information of the image
     unsigned char colorTable[1024]; // array to store the color table of the image
@@ -37,11 +39,9 @@ int dark_filter(inputFile, outputFile) {
         // read a chunk of image data from the input file
         size_t bytesRead = fread(buffer, sizeof(unsigned char), CHUNK_SIZE, fileIn);
         // apply the darkness threshold to each pixel in the chunk
-        for(i = 0; i < bytesRead; i++) {
+        for (i = 0; i < bytesRead; i++) {
             buffer[i] = buffer[i] + THRESHOLD;
-            buffer[i] = (buffer[i] > THRESHOLD)
-                        ? MAX_COLOR
-                        : ;
+            buffer[i] = (buffer[i] > THRESHOLD) ? MAX_COLOR : buffer[i];
         }
         // write the thresholded image data to the output file
         fwrite(buffer, sizeof(unsigned char), bytesRead, fileOut);
