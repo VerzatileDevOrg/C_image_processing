@@ -14,45 +14,46 @@ int negative_filter(const char *inputFile, const char *outputFile) {
         return 1;
     }
     
-    unsigned char *imageData;
-    unsigned char *newImageData;
-    unsigned char imageHeader[54];
+    unsigned char *imageData = NULL;
+    unsigned char *newImageData = NULL;
+    unsigned char headerInfo[54];
     unsigned char colorTable[1024];
-
-    int i, j;
     
-    // check if input file exists
-    fread(imageHeader, sizeof(unsigned char), 54, fileIn);
-    int width = *(int*)&imageHeader[18];
-    int height = *(int*)&imageHeader[22];
-    int bitDepth = *(int*)&imageHeader[28];
+    // Read image header
+    fread(headerInfo, sizeof(unsigned char), 54, fileIn);
+    int width = *(int*)&headerInfo[18];
+    int height = *(int*)&headerInfo[22];
+    int bitDepth = *(int*)&headerInfo[28];
     int imageDataSize = width * height;
     
+    // Allocate memory for image data
     imageData = (unsigned char*)malloc(imageDataSize * sizeof(unsigned char));
     newImageData = (unsigned char*)malloc(imageDataSize * sizeof(unsigned char));
     
-    // check if image has a color table
+    // Read color table if present
     if (bitDepth <= 8) {
         fread(colorTable, sizeof(unsigned char), 1024, fileIn);
     }
     
+    // Read original image data
     fread(imageData, sizeof(unsigned char), imageDataSize, fileIn);
 
-    // apply negative filter to each pixel
+    // Apply negative filter to each pixel
     unsigned char *p = imageData;
     unsigned char *q = newImageData;
-    for (i = 0; i < height * width; i++) {
+    for (int i = 0; i < height * width; i++) {
         *q++ = 255 - *p++;
     }
 
-    // write image data to output file
-    fwrite(imageHeader, sizeof(unsigned char), 54, fileOut);
+    // Write image data to output file
+    fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
     if (bitDepth <= 8) {
         fwrite(colorTable, sizeof(unsigned char), 1024, fileOut);
     }
-    
+
     fwrite(newImageData, sizeof(unsigned char), imageDataSize, fileOut);
 
+    // Clean up and close files
     fclose(fileIn);
     fclose(fileOut);
     
