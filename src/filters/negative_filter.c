@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
 int negative_filter(const char *inputFile, const char *outputFile)
 {
@@ -27,7 +25,7 @@ int negative_filter(const char *inputFile, const char *outputFile)
     int width = *(int *)&headerInfo[18];
     int height = *(int *)&headerInfo[22];
     int bitDepth = *(int *)&headerInfo[28];
-    int imageDataSize = width * height;
+    int imageDataSize = width * height * bitDepth;
 
     // Allocate memory for image data
     imageData = (unsigned char *)malloc(imageDataSize * sizeof(unsigned char));
@@ -45,13 +43,21 @@ int negative_filter(const char *inputFile, const char *outputFile)
     // Apply negative filter to each pixel
     unsigned char *p = imageData;
     unsigned char *q = newImageData;
-    for (int i = 0; i < height * width; i++)
+    for (int y = 0; y < height; y++)
     {
-        *q++ = 255 - *p++;
-    }
+        for (int x = 0; x < width; x++)
+        {
+            int index = (y * width + x) * (bitDepth / 8);
 
+            for (int channel = 0; channel < bitDepth / 8; channel++)
+            {
+                newImageData[index + channel] = 255 - imageData[index + channel];
+            }
+        }
+    }
     // Write image data to output file
     fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
+
     if (bitDepth <= 8)
     {
         fwrite(colorTable, sizeof(unsigned char), 1024, fileOut);
