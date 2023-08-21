@@ -7,7 +7,7 @@ int dark_filter(const char *inputFile, const char *outputFile)
 {
     FILE *fileIn = fopen(inputFile, "rb");
     FILE *fileOut = fopen(outputFile, "wb+");
-    unsigned char byte[54];
+    unsigned char headerInfo[54];
     int i, r, g, b;
 
     if (fileIn == NULL || fileOut == NULL)
@@ -23,14 +23,14 @@ int dark_filter(const char *inputFile, const char *outputFile)
     // read header info of image
     for (i = 0; i < 54; i++)
     {
-        byte[i] = getc(fileIn);
+        headerInfo[i] = getc(fileIn);
     }
 
     // write header info to output file
-    fwrite(byte, sizeof(unsigned char), 54, fileOut);
+    fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
     // extract attributes from image header
-    int height = *(int *)&byte[18];
-    int width = *(int *)&byte[22];
+    int height = *(int *)&headerInfo[18];
+    int width = *(int *)&headerInfo[22];
     int size = height * width;
 
     unsigned char buffer[size][3];
@@ -51,7 +51,7 @@ int dark_filter(const char *inputFile, const char *outputFile)
         g = buffer[i][1] * DARK_FACTOR;
         b = buffer[i][2] * DARK_FACTOR;
 
-        // write darkened image data to output file
+        // Write darkened image data to output file
         putc(b, fileOut);
         putc(g, fileOut);
         putc(r, fileOut);
