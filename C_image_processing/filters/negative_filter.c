@@ -2,52 +2,58 @@
 #include <stdlib.h>
 #include <time.h>
 
-int negative_filter(const char *inputFile, const char *outputFile) {
-    
+int negative_filter(const char *inputFile, const char *outputFile)
+{
     FILE *fileIn = fopen(inputFile, "rb");
     FILE *fileOut = fopen(outputFile, "wb+");
 
-    if (fileIn == NULL || fileOut == NULL) {
+    if (fileIn == NULL || fileOut == NULL)
+    {
         printf("File does not exist.\n");
-        if (fileIn != NULL) fclose(fileIn);
-        if (fileOut != NULL) fclose(fileOut);
+        if (fileIn != NULL)
+            fclose(fileIn);
+        if (fileOut != NULL)
+            fclose(fileOut);
         return 1;
     }
-    
+
     unsigned char *imageData = NULL;
     unsigned char *newImageData = NULL;
     unsigned char headerInfo[54];
     unsigned char colorTable[1024];
-    
+
     // Read image header
     fread(headerInfo, sizeof(unsigned char), 54, fileIn);
-    int width = *(int*)&headerInfo[18];
-    int height = *(int*)&headerInfo[22];
-    int bitDepth = *(int*)&headerInfo[28];
+    int width = *(int *)&headerInfo[18];
+    int height = *(int *)&headerInfo[22];
+    int bitDepth = *(int *)&headerInfo[28];
     int imageDataSize = width * height;
-    
+
     // Allocate memory for image data
-    imageData = (unsigned char*)malloc(imageDataSize * sizeof(unsigned char));
-    newImageData = (unsigned char*)malloc(imageDataSize * sizeof(unsigned char));
-    
+    imageData = (unsigned char *)malloc(imageDataSize * sizeof(unsigned char));
+    newImageData = (unsigned char *)malloc(imageDataSize * sizeof(unsigned char));
+
     // Read color table if present
-    if (bitDepth <= 8) {
+    if (bitDepth <= 8)
+    {
         fread(colorTable, sizeof(unsigned char), 1024, fileIn);
     }
-    
+
     // Read original image data
     fread(imageData, sizeof(unsigned char), imageDataSize, fileIn);
 
     // Apply negative filter to each pixel
     unsigned char *p = imageData;
     unsigned char *q = newImageData;
-    for (int i = 0; i < height * width; i++) {
+    for (int i = 0; i < height * width; i++)
+    {
         *q++ = 255 - *p++;
     }
 
     // Write image data to output file
     fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
-    if (bitDepth <= 8) {
+    if (bitDepth <= 8)
+    {
         fwrite(colorTable, sizeof(unsigned char), 1024, fileOut);
     }
 
@@ -56,8 +62,9 @@ int negative_filter(const char *inputFile, const char *outputFile) {
     // Clean up and close files
     fclose(fileIn);
     fclose(fileOut);
-    
+
     free(imageData);
     free(newImageData);
+
     return 0;
 }

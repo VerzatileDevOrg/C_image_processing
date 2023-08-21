@@ -1,40 +1,47 @@
 #include <gtk/gtk.h>
 
+#include "filters/black_and_white_filter.c"
+#include "filters/bright_filter.c"
+#include "filters/dark_filter.c"
+#include "filters/negative_filter.c"
+#include "filters/rgb_to_gray_filter.c"
+#include "filters/sepia_filter.c"
+
 // callback functions for all filters
 static void black_and_white_filter_apply(GtkWidget *widget, gpointer data)
 {
+    black_and_white_filter("assets/images/test_image.bmp", "assets/images/test_image_black_and_white.bmp");
     g_print("Black And White Filter Has Been Applied\n");
-    // TODO: Implement black and white filter logic
 }
 
 static void bright_filter_apply(GtkWidget *widget, gpointer data)
 {
+    bright_filter("assets/images/test_image.bmp", "assets/images/test_image_bright.bmp");
     g_print("Bright Filter Has Been Applied\n");
-    // TODO: Implement bright filter logic
 }
 
 static void dark_filter_apply(GtkWidget *widget, gpointer data)
 {
+    dark_filter("assets/images/test_image.bmp", "assets/images/test_image_dark.bmp");
     g_print("Dark Filter Has Been Applied\n");
-    // TODO: Implement dark filter logic
 }
 
 static void negative_filter_apply(GtkWidget *widget, gpointer data)
 {
+    negative_filter("assets/images/test_image.bmp", "assets/images/test_image_negative.bmp");
     g_print("Negative Filter Has Been Applied\n");
-    // TODO: Implement negative filter logic
 }
 
 static void rgb_to_gray_filter_apply(GtkWidget *widget, gpointer data)
 {
+    rgb_to_gray_filter("assets/images/test_image.bmp", "assets/images/test_image_rgb_to_gray.bmp");
     g_print("RGB To Gray Filter Has Been Applied\n");
-    // TODO: Implement rgb to gray filter logic
 }
 
 static void sepia_filter_apply(GtkWidget *widget, gpointer data)
 {
+    sepia_filter("assets/images/test_image.bmp", "assets/images/test_image_sepia.bmp");
     g_print("Sepia Filter Has Been Applied\n");
-    // TODO: Implement sepia filter logic
 }
 
 static void activate(GtkApplication *app, gpointer user_data)
