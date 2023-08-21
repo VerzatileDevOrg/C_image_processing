@@ -52,7 +52,7 @@ static void sepia_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
     sepia_filter("assets/images/test_image.bmp", "assets/images/test_image_sepia.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_dark.bmp");
+    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_sepia.bmp");
     g_print("Sepia Filter Has Been Applied\n");
 }
 

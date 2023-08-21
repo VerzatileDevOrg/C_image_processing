@@ -6,6 +6,8 @@ int sepia_filter(const char *inputFile, const char *outputFile)
 {
     FILE *fileIn = fopen(inputFile, "rb");
     FILE *fileOut = fopen(outputFile, "wb+");
+    unsigned char byte[54];
+    int i, r, g, b;
 
     if (fileIn == NULL || fileOut == NULL)
     {
@@ -17,58 +19,63 @@ int sepia_filter(const char *inputFile, const char *outputFile)
         return 1;
     }
 
-    // Read header info of image
-    unsigned char headerInfo[54];
-    for (int i = 0; i < 54; i++)
+    // read header info of image
+    for (i = 0; i < 54; i++)
     {
-        headerInfo[i] = getc(fileIn);
+        byte[i] = getc(fileIn);
     }
 
-    // Write header info to output file
-    fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
+    // write header info to output file
+    fwrite(byte, sizeof(unsigned char), 54, fileOut);
+    // extract attributes from image header
+    int height = *(int *)&byte[18];
+    int width = *(int *)&byte[22];
+    int bitDepth = *(int *)&byte[28];
+    int size = height * width;
 
-    // Extract.. of image from header info
-    int height = *(int *)&headerInfo[18];
-    int width = *(int *)&headerInfo[22];
-    int bitDepth = *(int *)&headerInfo[28];
-    int pixelsInImage = height * width;
+    // check if image has a color table
+    unsigned char buffer[size][3];
 
-    // Store image data in buffer
-    unsigned char(*buffer)[3] = malloc(pixelsInImage * sizeof(*buffer));
-    if (buffer == NULL)
+    // read & write image data in chunks until end of file reached
+    for (i = 0; i < size; i++)
     {
-        printf("Memory allocation failed.\n");
-        return 1;
-    }
+        r = 0;
+        g = 0;
+        b = 0;
 
-    for (int i = 0; i < pixelsInImage; i++)
-    {
-        int r = 0, g = 0, b = 0;
-
-        buffer[i][0] = getc(fileIn); // red
-        buffer[i][1] = getc(fileIn); // green
         buffer[i][2] = getc(fileIn); // blue
+        buffer[i][1] = getc(fileIn); // green
+        buffer[i][0] = getc(fileIn); // red
 
+        // conversion formula of rgb to sepia
+        r = (buffer[i][0] * 0.393) + (buffer[i][1] * 0.769) + (buffer[i][2] * 0.189);
+        g = (buffer[i][0] * 0.349) + (buffer[i][1] * 0.686) + (buffer[i][2] * 0.168);
+        b = (buffer[i][0] * 0.272) + (buffer[i][1] * 0.534) + (buffer[i][2] * 0.131);
+
+        // check if value is greater than 255
         if (r > MAX_VALUE)
         {
             r = MAX_VALUE;
         }
-        else if (g > MAX_VALUE)
+
+        if (g > MAX_VALUE)
         {
             g = MAX_VALUE;
         }
-        else if (b > MAX_VALUE)
+
+        if (b > MAX_VALUE)
         {
             b = MAX_VALUE;
         }
-        // add Grayscale filter to each pixel
+
+        // write sepia image data to output file
         putc(b, fileOut);
-        putc(b, fileOut);
-        putc(b, fileOut);
+        putc(g, fileOut);
+        putc(r, fileOut);
     }
 
-    fclose(fileIn);
     fclose(fileOut);
+    fclose(fileIn);
 
     return 0;
 }
