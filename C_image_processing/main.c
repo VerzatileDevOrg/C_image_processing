@@ -10,37 +10,49 @@
 // callback functions for all filters
 static void black_and_white_filter_apply(GtkWidget *widget, gpointer data)
 {
+    GtkWidget *image = data;
     black_and_white_filter("assets/images/test_image.bmp", "assets/images/test_image_black_and_white.bmp");
+    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_black_and_white.bmp");
     g_print("Black And White Filter Has Been Applied\n");
 }
 
 static void bright_filter_apply(GtkWidget *widget, gpointer data)
 {
+    GtkWidget *image = data;
     bright_filter("assets/images/test_image.bmp", "assets/images/test_image_bright.bmp");
+    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_bright.bmp");
     g_print("Bright Filter Has Been Applied\n");
 }
 
 static void dark_filter_apply(GtkWidget *widget, gpointer data)
 {
+    GtkWidget *image = data;
     dark_filter("assets/images/test_image.bmp", "assets/images/test_image_dark.bmp");
+    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_dark.bmp");
     g_print("Dark Filter Has Been Applied\n");
 }
 
 static void negative_filter_apply(GtkWidget *widget, gpointer data)
 {
+    GtkWidget *image = data;
     negative_filter("assets/images/test_image.bmp", "assets/images/test_image_negative.bmp");
+    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_negative.bmp");
     g_print("Negative Filter Has Been Applied\n");
 }
 
 static void rgb_to_gray_filter_apply(GtkWidget *widget, gpointer data)
 {
+    GtkWidget *image = data;
     rgb_to_gray_filter("assets/images/test_image.bmp", "assets/images/test_image_rgb_to_gray.bmp");
+    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_rgb_to_gray.bmp");
     g_print("RGB To Gray Filter Has Been Applied\n");
 }
 
 static void sepia_filter_apply(GtkWidget *widget, gpointer data)
 {
+    GtkWidget *image = data;
     sepia_filter("assets/images/test_image.bmp", "assets/images/test_image_sepia.bmp");
+    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_dark.bmp");
     g_print("Sepia Filter Has Been Applied\n");
 }
 
@@ -110,7 +122,7 @@ static void activate(GtkApplication *app, gpointer user_data)
 
     // create image widget
     image = gtk_image_new_from_file("assets/images/test_image.bmp");
-    gtk_image_set_pixel_size(GTK_IMAGE(image), 1000);
+    gtk_image_set_pixel_size(GTK_IMAGE(image), 900);
 
     // append image widget to image box
     gtk_box_append(GTK_BOX(image_box), image);
@@ -132,12 +144,12 @@ static void activate(GtkApplication *app, gpointer user_data)
     button4 = gtk_button_new_with_label("RGB To Gray Filter");
     button5 = gtk_button_new_with_label("Sepia Filter");
     // connect buttons to callback functions
-    g_signal_connect(button0, "clicked", G_CALLBACK(black_and_white_filter_apply), NULL);
-    g_signal_connect(button1, "clicked", G_CALLBACK(bright_filter_apply), NULL);
-    g_signal_connect(button2, "clicked", G_CALLBACK(dark_filter_apply), NULL);
-    g_signal_connect(button3, "clicked", G_CALLBACK(negative_filter_apply), NULL);
-    g_signal_connect(button4, "clicked", G_CALLBACK(rgb_to_gray_filter_apply), NULL);
-    g_signal_connect(button5, "clicked", G_CALLBACK(sepia_filter_apply), NULL);
+    g_signal_connect(button0, "clicked", G_CALLBACK(black_and_white_filter_apply), image);
+    g_signal_connect(button1, "clicked", G_CALLBACK(bright_filter_apply), image);
+    g_signal_connect(button2, "clicked", G_CALLBACK(dark_filter_apply), image);
+    g_signal_connect(button3, "clicked", G_CALLBACK(negative_filter_apply), image);
+    g_signal_connect(button4, "clicked", G_CALLBACK(rgb_to_gray_filter_apply), image);
+    g_signal_connect(button5, "clicked", G_CALLBACK(sepia_filter_apply), image);
     // append buttons to button box
     gtk_box_append(GTK_BOX(button_box), button0);
     gtk_box_append(GTK_BOX(button_box), button1);
