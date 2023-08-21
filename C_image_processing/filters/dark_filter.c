@@ -1,18 +1,21 @@
 #include <stdio.h>
 
 #define MAX_COLOR 255
-#define THRESHOLD 40 // define threshold value for darkness
-#define CHUNK_SIZE 1024 // define size of chunks to read and write
+#define DARK_THRESHOLD 40
+#define CHUNK_SIZE 1024
 
-int dark_filter(inputFile, outputFile) {
-    
+int dark_filter(const char *inputFile, const char *outputFile)
+{
     FILE *fileIn = fopen(inputFile, "rb");
     FILE *fileOut = fopen(outputFile, "wb+");
-    
-    if (fileIn == NULL || fileOut == NULL) {
+
+    if (fileIn == NULL || fileOut == NULL)
+    {
         printf("File does not exist.\n");
-        if (fileIn != NULL) fclose(fileIn);
-        if (fileOut != NULL) fclose(fileOut);
+        if (fileIn != NULL)
+            fclose(fileIn);
+        if (fileOut != NULL)
+            fclose(fileOut);
         return 1;
     }
 
@@ -20,7 +23,8 @@ int dark_filter(inputFile, outputFile) {
     unsigned char colorTable[1024];
 
     // Read header info of image
-    for(int i = 0; i < 54; i++) {
+    for (int i = 0; i < 54; i++)
+    {
         headerInfo[i] = getc(fileIn);
     }
 
@@ -28,13 +32,14 @@ int dark_filter(inputFile, outputFile) {
     fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
 
     // Extract.. of the image from header info
-    int height = *(int*)&headerInfo[18];
-    int width = *(int*)&headerInfo[22];
-    int bitDepth = *(int*)&headerInfo[28];
+    int height = *(int *)&headerInfo[18];
+    int width = *(int *)&headerInfo[22];
+    int bitDepth = *(int *)&headerInfo[28];
     int pixelsInImage = height * width;
 
     // Check if image has a color table
-    if(bitDepth <= 8) {
+    if (bitDepth <= 8)
+    {
         fread(colorTable, sizeof(unsigned char), 1024, fileIn);
         fwrite(colorTable, sizeof(unsigned char), 1024, fileOut);
     }
@@ -42,15 +47,17 @@ int dark_filter(inputFile, outputFile) {
     unsigned char chunkBuffer[CHUNK_SIZE];
 
     // Read & write image data in chunks until end of file reached
-    while(!feof(fileIn)) {
+    while (!feof(fileIn))
+    {
 
         // read a chunk of image data from input file
         size_t bytesRead = fread(chunkBuffer, sizeof(unsigned char), CHUNK_SIZE, fileIn);
-        
+
         // apply darkness threshold to each pixel in chunk
-        for (int i = 0; i < bytesRead; i++) {
-            chunkBuffer[i] = chunkBuffer[i] + THRESHOLD;
-            chunkBuffer[i] = (chunkBuffer[i] > THRESHOLD) ? MAX_COLOR : chunkBuffer[i];
+        for (int i = 0; i < bytesRead; i++)
+        {
+            chunkBuffer[i] = chunkBuffer[i] + DARK_THRESHOLD;
+            chunkBuffer[i] = (chunkBuffer[i] > DARK_THRESHOLD) ? MAX_COLOR : chunkBuffer[i];
         }
         // write thresholded image data to the output file
         fwrite(chunkBuffer, sizeof(unsigned char), bytesRead, fileOut);
@@ -59,7 +66,8 @@ int dark_filter(inputFile, outputFile) {
     // Write thresholded image data to output file
     fwrite(chunkBuffer, sizeof(unsigned char), pixelsInImage, fileOut);
 
-    fClose(fileIn);
+    fclose(fileIn);
     fclose(fileOut);
+
     return 0;
 }
