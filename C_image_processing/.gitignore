@@ -76,13 +76,13 @@ dkms.conf
 # Executables
 
 ### VisualStudioCode ###
-.vscode/*
-!.vscode/c_cpp_properties.json
+*.vscode
+#!.vscode/c_cpp_properties.json
 #!.vscode/settings.json # user Specific
-!.vscode/tasks.json
+#!.vscode/tasks.json
 #!.vscode/launch.json # user Specific
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+#!.vscode/extensions.json
+#!.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/
