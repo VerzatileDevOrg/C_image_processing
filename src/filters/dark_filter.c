@@ -29,11 +29,11 @@ int dark_filter(const char *input_file, const char *output_file)
     // extract attributes from image header
     int height = *(int *)&header_info[18];
     int width = *(int *)&header_info[22];
-    int size = height * width;
+    int pixels_in_image = height * width;
     // check if image has a color table
-    unsigned char buffer[size][3];
+    unsigned char buffer[pixels_in_image][3];
     // read & write image data in chunks until end of file is reached
-    for (i = 0; i < size; i++)
+    for (i = 0; i < pixels_in_image; i++)
     {
         r = 0;
         g = 0;
