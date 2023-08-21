@@ -6,69 +6,61 @@
 #define CHUNK_SIZE 1024 // define size of the chunks to read and write
 #define THRESHOLD 128   // define threshold value for the brightness condition
 
-int bright_filter(const char *inputFile, const char *outputFile)
+int bright_filter(const char *input_file, const char *output_file)
 {
-    FILE *fileIn = fopen(inputFile, "rb");
-    FILE *fileOut = fopen(outputFile, "wb+");
+    FILE *file_in = fopen(input_file, "rb");
+    FILE *file_out = fopen(output_file, "wb+");
 
-    if (fileIn == NULL || fileOut == NULL)
+    if (file_in == NULL || file_out == NULL)
     {
         printf("File does not exist.\n");
-        if (fileIn != NULL)
-            fclose(fileIn);
-        if (fileOut != NULL)
-            fclose(fileOut);
+        if (file_in != NULL)
+            fclose(file_in);
+        if (file_out != NULL)
+            fclose(file_out);
         return 1;
     }
-
-    unsigned char headerInfo[54];
-    unsigned char colorTable[1024];
-
+    // read header info of image
+    unsigned char header_info[54];
+    unsigned char color_table[1024];
+    // write header info to output file
     for (int i = 0; i < 54; i++)
     {
-        headerInfo[i] = getc(fileIn);
+        header_info[i] = getc(file_in);
     }
-
-    fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
-
-    // Extract.. of image from header info
-    int height = *(int *)&headerInfo[18];
-    int width = *(int *)&headerInfo[22];
-    int bitDepth = *(int *)&headerInfo[28];
-    int pixelsInImage = height * width;
-
-    // Check if image has a color table
-    if (bitDepth <= 8)
+    fwrite(header_info, sizeof(unsigned char), 54, file_out);
+    // extract attributes from image header
+    int height = *(int *)&header_info[18];
+    int width = *(int *)&header_info[22];
+    int bit_depth = *(int *)&header_info[28];
+    int pixels_in_image = height * width;
+    // check if image has a color table
+    if (bit_depth <= 8)
     {
-        fread(colorTable, sizeof(unsigned char), 1024, fileIn);
-        fwrite(colorTable, sizeof(unsigned char), 1024, fileOut);
+        fread(color_table, sizeof(unsigned char), 1024, file_in);
+        fwrite(color_table, sizeof(unsigned char), 1024, file_out);
     }
-
-    unsigned char chunkBuffer[CHUNK_SIZE];
-
-    // Read & write image data in chunks until the end of file is reached
-    while (!feof(fileIn))
+    // allocate memory for image data
+    unsigned char chunk_buffer[CHUNK_SIZE];
+    // read & write image data in chunks until the end of file is reached
+    while (!feof(file_in))
     {
-
-        // Read a chunk of image data from the input file
-        size_t bytesRead = fread(chunkBuffer, sizeof(unsigned char), CHUNK_SIZE, fileIn);
-
-        // Apply brightness factor to each pixel in the chunk
-        for (int i = 0; i < bytesRead; i++)
+        // read a chunk of image data from the input file
+        size_t bytes_read = fread(chunk_buffer, sizeof(unsigned char), CHUNK_SIZE, file_in);
+        // apply brightness factor to each pixel in the chunk
+        for (int i = 0; i < bytes_read; i++)
         {
-            chunkBuffer[i] = chunkBuffer[i] + BRIGHTNESS;
-            chunkBuffer[i] = (chunkBuffer[i] > THRESHOLD) ? MAX_COLOR : chunkBuffer[i];
+            chunk_buffer[i] = chunk_buffer[i] + BRIGHTNESS;
+            chunk_buffer[i] = (chunk_buffer[i] > THRESHOLD) ? MAX_COLOR : chunk_buffer[i];
         }
-
-        // Write thresholded image data to output file
-        fwrite(chunkBuffer, sizeof(unsigned char), bytesRead, fileOut);
+        // write thresholded image data to output file
+        fwrite(chunk_buffer, sizeof(unsigned char), bytes_read, file_out);
     }
-
-    // Write thresholded image data to output file
-    fwrite(chunkBuffer, sizeof(unsigned char), pixelsInImage, fileOut);
-
-    fclose(fileIn);
-    fclose(fileOut);
+    // write thresholded image data to output file
+    fwrite(chunk_buffer, sizeof(unsigned char), pixels_in_image, file_out);
+    // clean up memory
+    fclose(file_in);
+    fclose(file_out);
 
     return 0;
 }
