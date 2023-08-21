@@ -124,7 +124,7 @@ static void activate(GtkApplication *app, gpointer user_data)
     // create new window
     window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "C Image Processing");
-    gtk_window_set_default_size(GTK_WINDOW(window), 1000, 1000);
+    gtk_window_set_default_size(GTK_WINDOW(window), 800, 800);
     // create new vertical box container
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_halign(box, GTK_ALIGN_CENTER);
