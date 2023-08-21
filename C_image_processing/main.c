@@ -59,15 +59,16 @@ static void sepia_filter_apply(GtkWidget *widget, gpointer data)
 static void activate(GtkApplication *app, gpointer user_data)
 {
     GtkWidget *window;
+    GtkWidget *box;
     GtkWidget *image;
-    GtkWidget *image_box;
+    GtkWidget *user_image_box;
+    GtkWidget *filtered_image_box;
     GtkWidget *button0;
     GtkWidget *button1;
     GtkWidget *button2;
     GtkWidget *button3;
     GtkWidget *button4;
     GtkWidget *button5;
-    GtkWidget *box;
     GtkWidget *button_box;
     const char *css = "@font-face {"
                       "    font-family: BigNoodleTitling;"
@@ -75,6 +76,7 @@ static void activate(GtkApplication *app, gpointer user_data)
                       "}"
                       "headerbar.titlebar {"
                       "    font-family: BigNoodleTitling;"
+                      "    src: url(\"assets/fonts/big_noodle_titling_oblique.ttf\");"
                       "    font-size: 36px;"
                       "    color: black;"
                       "    background-color: #4CAF50;"
@@ -102,40 +104,46 @@ static void activate(GtkApplication *app, gpointer user_data)
     window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "C Image Processing");
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 1000);
-
     // create new vertical box container
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_halign(box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(box, GTK_ALIGN_END);
-
     // include box container in window
     gtk_window_set_child(GTK_WINDOW(window), box);
 
-    // create new horizontal box container for image
-    image_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_widget_set_halign(image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(image_box, 40);
-
-    // append image box to vertical box
-    gtk_box_append(GTK_BOX(box), image_box);
-
+    // create new horizontal box container for user image
+    user_image_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_widget_set_halign(user_image_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(user_image_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_bottom(user_image_box, 40);
+    // append user image box to vertical box
+    gtk_box_append(GTK_BOX(box), user_image_box);
     // create image widget
     image = gtk_image_new_from_file("assets/images/test_image.bmp");
-    gtk_image_set_pixel_size(GTK_IMAGE(image), 900);
+    gtk_image_set_pixel_size(GTK_IMAGE(image), 450);
+    // append user image widget to user image box
+    gtk_box_append(GTK_BOX(user_image_box), image);
 
-    // append image widget to image box
-    gtk_box_append(GTK_BOX(image_box), image);
+    // create new horizontal box container for filtered image
+    filtered_image_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_widget_set_halign(filtered_image_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(filtered_image_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_bottom(filtered_image_box, 40);
+    // append filtered image box to vertical box
+    gtk_box_append(GTK_BOX(box), filtered_image_box);
+    // create image widget
+    image = gtk_image_new_from_file("assets/images/test_image.bmp");
+    gtk_image_set_pixel_size(GTK_IMAGE(image), 450);
+    // append user image widget to filtered image box
+    gtk_box_append(GTK_BOX(filtered_image_box), image);
 
     // create new horizontal box container for buttons
     button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(button_box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(button_box, GTK_ALIGN_CENTER);
     gtk_widget_set_margin_bottom(button_box, 40);
-
     // append button box to vertical box
     gtk_box_append(GTK_BOX(box), button_box);
-
     // create filter buttons
     button0 = gtk_button_new_with_label("Black And White Filter");
     button1 = gtk_button_new_with_label("Bright Filter");
