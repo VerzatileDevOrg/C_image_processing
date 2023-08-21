@@ -4,9 +4,6 @@ int rgb_to_gray_filter(inputFile, outputFile) {
 
     FILE *fileIn = fopen(inputFile, "rb");
     FILE *fileOut = fopen(outputFile, "wb+");
-    
-    int i;
-    unsigned char byte[54]; // store header info
 
     if (fileIn == NULL || fileOut == NULL) {
         printf("File does not exist.\n");
@@ -15,42 +12,43 @@ int rgb_to_gray_filter(inputFile, outputFile) {
         return 1;
     }
 
-    // read header info of image
-    for(i = 0; i < 54; i++) {
-        byte[i] = getc(fileIn);
-    }
+    // Read and write header info
+    unsigned char headerInfo[54];
+    fread(headerInfo, sizeof(unsigned char), 54, fileIn);
+    fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
 
-    // write header info to output file
-    fwrite(byte, sizeof(unsigned char), 54, fileOut);
+    // Extract image dimensions from header info
+    int height = *(int*)&headerInfo[18];
+    int width = *(int*)&headerInfo[22];
+    int bitDepth = *(int*)&headerInfo[28];
+    int pixelsInImage = height * width;
 
-    // extract height, width & bitDepth of image from header info
-    int height = *(int*)&byte[18];
-    int width = *(int*)&byte[22];
-    int bitDepth = *(int*)&byte[28];
-    int size = height * width;
-
-    unsigned char (*buffer)[3] = malloc(size * sizeof(*buffer)); // store image data
+    // Allocate Memory to Image Data
+    unsigned char (*buffer)[3] = malloc(pixelsInImage * sizeof(*buffer));
     if (buffer == NULL) {
         printf("Memory allocation failed.\n");
+        fclose(fileIn);
+        fclose(fileOut);
         return 1;
     }
     
-    unsigned char y;
-    for(i = 0; i < size; i ++) {
-        y = 0;
-        buffer[i][0] = getc(fileIn); // red
-        buffer[i][1] = getc(fileIn); // green
-        buffer[i][2] = getc(fileIn); // blue
+    for (int i = 0; i < pixelsInImage; i++) {
 
-        // RGB to gray
-        y = (buffer[i][0] * 0.3) + (buffer[i][2] * 0.11);
+        // read RGB color components of current pixel from input file
+        buffer[i][0] = getc(fileIn); // Red
+        buffer[i][1] = getc(fileIn); // Green
+        buffer[i][2] = getc(fileIn); // Blue
 
-        // Triplicate grayscale value for three color channels
-        putc(y, fileOut);
-        putc(y, fileOut);
-        putc(y, fileOut);
+        // calculate grayscale value using weighted average of red and blue components
+        unsigned char grayscaleValue = (buffer[i][0] * 0.3) + (buffer[i][2] * 0.11);
+        
+        // write the calculated grayscale value to the output file for each RGB channel
+        putc(grayscaleValue, fileOut); // Red
+        putc(grayscaleValue, fileOut); // Green
+        putc(grayscaleValue, fileOut); // Blue
     }
 
+    // Clean up / Close
     fClose(fileIn);
     fclose(fileOut);
     return 0;

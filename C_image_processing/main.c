@@ -1,10 +1,11 @@
 #include "filters/black_and_white_filter.c"
 #include "filters/negative_filter.c"
+#include <gtk/gtk.h>
 
 int main() {
+    
     const char* inputFileName = "assets/images/test_image.bmp";
     const char* outputFileName = "assets/images/output.bmp";
-
     int result = black_and_white_filter(inputFileName, outputFileName);
 
     switch (result) {
