@@ -46,12 +46,12 @@ int dark_filter(const char *inputFile, const char *outputFile)
         buffer[i][1] = getc(fileIn); // green
         buffer[i][0] = getc(fileIn); // red
 
-        // Apply darkness effect to each channel
+        // apply darkness effect to each channel
         r = buffer[i][0] * DARK_FACTOR;
         g = buffer[i][1] * DARK_FACTOR;
         b = buffer[i][2] * DARK_FACTOR;
 
-        // Write darkened image data to output file
+        // write darkened image data to output file
         putc(b, fileOut);
         putc(g, fileOut);
         putc(r, fileOut);
