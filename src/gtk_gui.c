@@ -74,23 +74,29 @@ static void sepia_filter_apply(GtkWidget *widget, gpointer data)
     g_print("Sepia Filter Has Been Applied\n");
 }
 
+// struct for filter buttons
+typedef struct
+{
+    const char *label;
+    void (*callback)(GtkWidget *, gpointer);
+} FilterButtonInfo;
+
+// connect filter buttons to callback functions
+void connect_filter_buttons(GtkWidget *image, const FilterButtonInfo *button_info, int num_buttons, GtkWidget *button_box)
+{
+    for (int i = 0; i < num_buttons; ++i)
+    {
+        GtkWidget *button = gtk_button_new_with_label(button_info[i].label);
+        g_signal_connect(button, "clicked", G_CALLBACK(button_info[i].callback), image);
+        gtk_box_append(GTK_BOX(button_box), button);
+    }
+}
+
 static void activate(GtkApplication *app, gpointer user_data)
 {
-    GtkWidget *window;
-    GtkWidget *box;
-    GtkWidget *image;
-    GtkWidget *user_image_box;
-    GtkWidget *filtered_image_box;
-    GtkWidget *button_box0;
-    GtkWidget *button_box1;
-    GtkWidget *button0;
-    GtkWidget *button1;
-    GtkWidget *button2;
-    GtkWidget *button3;
-    GtkWidget *button4;
-    GtkWidget *button5;
-    GtkWidget *button6;
-    GtkWidget *button7;
+    GtkWidget *window, *box, *image, *user_image_box, *filtered_image_box,
+        *button_box0, *button_box1, *button0, *button1, *button2,
+        *button3, *button4, *button5, *button6, *button7;
     const char *css = "window {"
                       "    background-color: #FFFFE4;"
                       "}"
@@ -113,6 +119,16 @@ static void activate(GtkApplication *app, gpointer user_data)
                       "    margin: 8px 5px;"
                       "    font-family: BigNoodleTitling;"
                       "}";
+    FilterButtonInfo filter_buttons[] = {
+        {"Black And White Filter", black_and_white_filter_apply},
+        {"Bright Filter", bright_filter_apply},
+        {"Dark Filter", dark_filter_apply},
+        {"Emboss Filter", emboss_filter_apply},
+        {"Negative Filter", negative_filter_apply},
+        {"Pixelate Filter", pixelate_filter_apply},
+        {"RGB To Gray Filter", rgb_to_gray_filter_apply},
+        {"Sepia Filter", sepia_filter_apply}};
+    int num_filter_buttons = sizeof(filter_buttons) / sizeof(filter_buttons[0]);
 
     // create new window
     window = gtk_application_window_new(app);
@@ -168,33 +184,9 @@ static void activate(GtkApplication *app, gpointer user_data)
     // append button box to vertical box
     gtk_box_append(GTK_BOX(box), button_box1);
 
-    // create filter buttons
-    button0 = gtk_button_new_with_label("Black And White Filter");
-    button1 = gtk_button_new_with_label("Bright Filter");
-    button2 = gtk_button_new_with_label("Dark Filter");
-    button3 = gtk_button_new_with_label("Emboss Filter");
-    button4 = gtk_button_new_with_label("Negative Filter");
-    button5 = gtk_button_new_with_label("Pixelate Filter");
-    button6 = gtk_button_new_with_label("RGB To Gray Filter");
-    button7 = gtk_button_new_with_label("Sepia Filter");
-    // connect buttons to callback functions
-    g_signal_connect(button0, "clicked", G_CALLBACK(black_and_white_filter_apply), image);
-    g_signal_connect(button1, "clicked", G_CALLBACK(bright_filter_apply), image);
-    g_signal_connect(button2, "clicked", G_CALLBACK(dark_filter_apply), image);
-    g_signal_connect(button3, "clicked", G_CALLBACK(emboss_filter_apply), image);
-    g_signal_connect(button4, "clicked", G_CALLBACK(negative_filter_apply), image);
-    g_signal_connect(button5, "clicked", G_CALLBACK(pixelate_filter_apply), image);
-    g_signal_connect(button6, "clicked", G_CALLBACK(rgb_to_gray_filter_apply), image);
-    g_signal_connect(button7, "clicked", G_CALLBACK(sepia_filter_apply), image);
-    // append buttons to button box
-    gtk_box_append(GTK_BOX(button_box0), button0);
-    gtk_box_append(GTK_BOX(button_box0), button1);
-    gtk_box_append(GTK_BOX(button_box0), button2);
-    gtk_box_append(GTK_BOX(button_box0), button3);
-    gtk_box_append(GTK_BOX(button_box1), button4);
-    gtk_box_append(GTK_BOX(button_box1), button5);
-    gtk_box_append(GTK_BOX(button_box1), button6);
-    gtk_box_append(GTK_BOX(button_box1), button7);
+    // connect filter buttons to callback functions
+    connect_filter_buttons(image, filter_buttons, num_filter_buttons / 2, button_box0);
+    connect_filter_buttons(image, filter_buttons + num_filter_buttons / 2, num_filter_buttons / 2, button_box1);
 
     // create new CSS provider object and load CSS
     GtkCssProvider *provider = gtk_css_provider_new();
