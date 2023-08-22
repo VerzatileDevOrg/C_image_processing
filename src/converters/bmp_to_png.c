@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <jpeglib.h>
+#include <png.h>
 
-int bmp_to_jpeg(const char *input_filename, const char *output_filename)
+int bmp_to_png(const char *input_filename, const char *output_filename)
 {
     // open BMP file for reading
     FILE *input_file = fopen(input_filename, "rb");
@@ -53,51 +53,63 @@ int bmp_to_jpeg(const char *input_filename, const char *output_filename)
     }
     // close BMP file
     fclose(input_file);
-    // allocate memory for JPEG image data
-    unsigned char *jpeg_data = NULL;
-    unsigned long jpeg_size = 0;
-    // create JPEG compressor object
-    struct jpeg_compress_struct cinfo;
-    struct jpeg_error_mgr jerr;
-    cinfo.err = jpeg_std_error(&jerr);
-    jpeg_create_compress(&cinfo);
-    // open output file for writing
+    // open PNG file for writing
     FILE *output_file = fopen(output_filename, "wb");
     if (!output_file)
     {
         fprintf(stderr, "Error: could not open output file %s\n", output_filename);
         free(bmp_data);
-        jpeg_destroy_compress(&cinfo);
         return 1;
     }
-    // set JPEG compressor parameters
-    cinfo.image_width = width;
-    cinfo.image_height = height;
-    cinfo.input_components = 3;
-    cinfo.in_color_space = JCS_RGB;
-    jpeg_set_defaults(&cinfo);
-    jpeg_set_quality(&cinfo, 75, TRUE);
-    // set output file for JPEG compressor
-    jpeg_stdio_dest(&cinfo, output_file);
-    // start JPEG compressor
-    jpeg_start_compress(&cinfo, TRUE);
-    // write JPEG image data
-    while (cinfo.next_scanline < cinfo.image_height)
+    // create PNG write struct
+    png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png_ptr)
     {
-        JSAMPROW row_pointer = &bmp_data[(cinfo.image_height - cinfo.next_scanline - 1) * (width * 3 + padding)];
-        jpeg_write_scanlines(&cinfo, &row_pointer, 1);
+        fprintf(stderr, "Error: could not create PNG write struct\n");
+        free(bmp_data);
+        fclose(output_file);
+        return 1;
     }
-    // finish JPEG compressor
-    jpeg_finish_compress(&cinfo);
-    // get size of JPEG image data
-    jpeg_size = ftell(output_file);
-    // close output file
-    fclose(output_file);
-    // destroy JPEG compressor object
-    jpeg_destroy_compress(&cinfo);
+    // create PNG info struct
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+    {
+        fprintf(stderr, "Error: could not create PNG info struct\n");
+        free(bmp_data);
+        png_destroy_write_struct(&png_ptr, NULL);
+        fclose(output_file);
+        return 1;
+    }
+    // set error handling
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        fprintf(stderr, "Error: PNG error\n");
+        free(bmp_data);
+        png_destroy_write_struct(&png_ptr, &info_ptr);
+        fclose(output_file);
+        return 1;
+    }
+    // set PNG output file
+    png_init_io(png_ptr, output_file);
+    // set PNG header info
+    png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+    // write PNG header info
+    png_write_info(png_ptr, info_ptr);
+    // write PNG image data
+    for (int y = 0; y < height; y++)
+    {
+        png_bytep row_pointer = &bmp_data[(height - y - 1) * (width * 3 + padding)];
+        png_write_row(png_ptr, row_pointer);
+    }
+    // finish writing PNG file
+    png_write_end(png_ptr, NULL);
+    // free PNG write struct and info struct
+    png_destroy_write_struct(&png_ptr, &info_ptr);
     // free BMP image data
     free(bmp_data);
-    printf("Converted %s to %s (%lu bytes)\n", input_filename, output_filename, jpeg_size);
+    // close PNG file
+    fclose(output_file);
+    printf("Converted %s to %s\n", input_filename, output_filename);
 
     return 0;
 }

@@ -13,7 +13,8 @@
 static void black_and_white_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
-    black_and_white_filter("assets/images/test_image.bmp", "assets/images/test_image_black_and_white.bmp");
+
+    black_and_white_filter("assets/images/test_image.bmp", "assets/images/test_image_bright.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_black_and_white.bmp");
     g_print("Black And White Filter Has Been Applied\n");
 }
@@ -21,6 +22,7 @@ static void black_and_white_filter_apply(GtkWidget *widget, gpointer data)
 static void bright_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
+
     bright_filter("assets/images/test_image.bmp", "assets/images/test_image_bright.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_bright.bmp");
     g_print("Bright Filter Has Been Applied\n");
@@ -29,6 +31,7 @@ static void bright_filter_apply(GtkWidget *widget, gpointer data)
 static void dark_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
+
     dark_filter("assets/images/test_image.bmp", "assets/images/test_image_dark.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_dark.bmp");
     g_print("Dark Filter Has Been Applied\n");
@@ -37,6 +40,7 @@ static void dark_filter_apply(GtkWidget *widget, gpointer data)
 static void emboss_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
+
     emboss_filter("assets/images/test_image.bmp", "assets/images/test_image_emboss.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_emboss.bmp");
     g_print("Emboss Filter Has Been Applied\n");
@@ -45,6 +49,7 @@ static void emboss_filter_apply(GtkWidget *widget, gpointer data)
 static void negative_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
+
     negative_filter("assets/images/test_image.bmp", "assets/images/test_image_negative.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_negative.bmp");
     g_print("Negative Filter Has Been Applied\n");
@@ -53,6 +58,7 @@ static void negative_filter_apply(GtkWidget *widget, gpointer data)
 static void pixelate_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
+
     pixelate_filter("assets/images/test_image.bmp", "assets/images/test_image_pixelate.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_pixelate.bmp");
     g_print("Pixelate Filter Has Been Applied\n");
@@ -61,6 +67,7 @@ static void pixelate_filter_apply(GtkWidget *widget, gpointer data)
 static void rgb_to_gray_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
+
     rgb_to_gray_filter("assets/images/test_image.bmp", "assets/images/test_image_rgb_to_gray.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_rgb_to_gray.bmp");
     g_print("RGB To Gray Filter Has Been Applied\n");
@@ -69,6 +76,7 @@ static void rgb_to_gray_filter_apply(GtkWidget *widget, gpointer data)
 static void sepia_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
+
     sepia_filter("assets/images/test_image.bmp", "assets/images/test_image_sepia.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_sepia.bmp");
     g_print("Sepia Filter Has Been Applied\n");
