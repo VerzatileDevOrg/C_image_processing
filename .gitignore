@@ -77,6 +77,7 @@ dkms.conf
 
 ### VisualStudioCode ###
 *.vscode
+.vscode/
 #!.vscode/c_cpp_properties.json
 #!.vscode/settings.json # user Specific
 #!.vscode/tasks.json
