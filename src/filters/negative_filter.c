@@ -16,13 +16,13 @@ int negative_filter(const char *input_file, const char *outputfile)
     }
     unsigned char *image_data = NULL;
     unsigned char *new_image_data = NULL;
-    unsigned char headerInfo[54];
-    unsigned char colorTable[1024];
+    unsigned char header_info[54];
+    unsigned char color_table[1024];
     // read image header
-    fread(headerInfo, sizeof(unsigned char), 54, file_in);
-    int width = *(int *)&headerInfo[18];
-    int height = *(int *)&headerInfo[22];
-    int bit_depth = *(int *)&headerInfo[28];
+    fread(header_info, sizeof(unsigned char), 54, file_in);
+    int width = *(int *)&header_info[18];
+    int height = *(int *)&header_info[22];
+    int bit_depth = *(int *)&header_info[28];
     int image_data_size = width * height * bit_depth;
     // allocate memory for image data
     image_data = (unsigned char *)malloc(image_data_size * sizeof(unsigned char));
@@ -30,7 +30,7 @@ int negative_filter(const char *input_file, const char *outputfile)
     // read color table if present
     if (bit_depth <= 8)
     {
-        fread(colorTable, sizeof(unsigned char), 1024, file_in);
+        fread(color_table, sizeof(unsigned char), 1024, file_in);
     }
     // read original image data
     fread(image_data, sizeof(unsigned char), image_data_size, file_in);
@@ -50,10 +50,10 @@ int negative_filter(const char *input_file, const char *outputfile)
         }
     }
     // write image data to output file
-    fwrite(headerInfo, sizeof(unsigned char), 54, file_out);
+    fwrite(header_info, sizeof(unsigned char), 54, file_out);
     if (bit_depth <= 8)
     {
-        fwrite(colorTable, sizeof(unsigned char), 1024, file_out);
+        fwrite(color_table, sizeof(unsigned char), 1024, file_out);
     }
     fwrite(new_image_data, sizeof(unsigned char), image_data_size, file_out);
     // clean up memory

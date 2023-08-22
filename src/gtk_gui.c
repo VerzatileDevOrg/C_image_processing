@@ -91,33 +91,26 @@ static void activate(GtkApplication *app, gpointer user_data)
     GtkWidget *button5;
     GtkWidget *button6;
     GtkWidget *button7;
-    const char *css = "@font-face {"
-                      "    font-family: BigNoodleTitling;"
-                      "    src: url(\"assets/fonts/big_noodle_titling.ttf\");"
+    const char *css = "window {"
+                      "    background-color: #FFFFE4;"
                       "}"
                       "headerbar.titlebar {"
                       "    font-family: BigNoodleTitling;"
-                      "    src: url(\"assets/fonts/big_noodle_titling_oblique.ttf\");"
                       "    font-size: 36px;"
                       "    color: black;"
                       "    background-color: #4CAF50;"
                       "    border: none;"
                       "    padding: 10px 20px;"
-                      "    text-align: center;"
                       "    text-decoration: none;"
-                      "    display: inline-block;"
                       "}"
                       "button {"
                       "    background-color: #4CAF50;"
                       "    color: black;"
                       "    2px solid #008CBA;"
                       "    padding: 10px 20px;"
-                      "    text-align: center;"
                       "    text-decoration: none;"
-                      "    display: inline-block;"
                       "    font-size: 22px;"
                       "    margin: 8px 5px;"
-                      "    cursor: pointer;"
                       "    font-family: BigNoodleTitling;"
                       "}";
 
@@ -125,6 +118,8 @@ static void activate(GtkApplication *app, gpointer user_data)
     window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "C Image Processing");
     gtk_window_set_default_size(GTK_WINDOW(window), 800, 800);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+
     // create new vertical box container
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_halign(box, GTK_ALIGN_CENTER);

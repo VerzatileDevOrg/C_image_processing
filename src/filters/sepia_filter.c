@@ -23,7 +23,6 @@ int sepia_filter(const char *input_file, const char *output_file)
     {
         header_info[i] = getc(file_in);
     }
-    // write header info to output file
     fwrite(header_info, sizeof(unsigned char), 54, file_out);
     // extract attributes from image header
     int height = *(int *)&header_info[18];

@@ -29,7 +29,7 @@ int emboss_filter(const char *input_file, const char *output_file)
     int height = *(int *)&header_info[18];
     int width = *(int *)&header_info[22];
     int pixels_in_image = height * width;
-    // check if image has a color table
+    // allocate memory to image data
     unsigned char buffer[pixels_in_image][3];
     // read & write image data in chunks until end of file is reached
     for (i = 0; i < height; i++)
