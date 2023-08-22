@@ -1,96 +1,76 @@
 #include <stdio.h>
-#include <math.h>
+#include <stdlib.h>
 
 #define MAX_COLOR 255
-#define PIXEL_SIZE 10
+#define PIXEL_SIZE 20
 
-int pixelate_filter(const char *inputFile, const char *outputFile)
+int pixelate_filter(const char *input_file, const char *output_file)
 {
-    FILE *fileIn = fopen(inputFile, "rb");
-    FILE *fileOut = fopen(outputFile, "wb+");
-    unsigned char byte[54];
-    int i, j, r, g, b;
+    FILE *file_in = fopen(input_file, "rb");
+    FILE *file_out = fopen(output_file, "wb");
 
-    if (fileIn == NULL || fileOut == NULL)
+    if (file_in == NULL || file_out == NULL)
     {
         printf("File does not exist.\n");
-        if (fileIn != NULL)
-            fclose(fileIn);
-        if (fileOut != NULL)
-            fclose(fileOut);
+        if (file_in != NULL)
+            fclose(file_in);
+        if (file_out != NULL)
+            fclose(file_out);
         return 1;
     }
-
-    // read header info of image
-    for (i = 0; i < 54; i++)
-    {
-        byte[i] = getc(fileIn);
-    }
-
+    unsigned char header_info[54];
     // write header info to output file
-    fwrite(byte, sizeof(unsigned char), 54, fileOut);
+    fread(header_info, sizeof(unsigned char), 54, file_in);
     // extract attributes from image header
-    int height = *(int *)&byte[18];
-    int width = *(int *)&byte[22];
-    int size = height * width;
-
-    unsigned char buffer[size][3];
-
-    // read & write image data in chunks until end of file is reached
-    for (i = 0; i < height; i += PIXEL_SIZE)
+    int height = *(int *)&header_info[18];
+    int width = *(int *)&header_info[22];
+    int bits_per_pixel = *(int *)&header_info[28];
+    int pixels_in_image = height * width;
+    // write header info to output file
+    fwrite(header_info, sizeof(unsigned char), 54, file_out);
+    // check if image has a color table
+    unsigned char *pixel_data = (unsigned char *)malloc(pixels_in_image * (bits_per_pixel / 8));
+    fread(pixel_data, sizeof(unsigned char), pixels_in_image * (bits_per_pixel / 8), file_in);
+    // read & write image data in chunks until end of file reached
+    for (int i = 0; i < height; i += PIXEL_SIZE)
     {
-        for (j = 0; j < width; j += PIXEL_SIZE)
+        for (int j = 0; j < width; j += PIXEL_SIZE)
         {
-            r = 0;
-            g = 0;
-            b = 0;
-
-            // calculate average color of pixel block
+            int r = 0, g = 0, b = 0;
             int count = 0;
-            int x, y;
-            for (x = i; x < i + PIXEL_SIZE; x++)
+            for (int x = i; x < i + PIXEL_SIZE && x < height; x++)
             {
-                for (y = j; y < j + PIXEL_SIZE; y++)
+                for (int y = j; y < j + PIXEL_SIZE && y < width; y++)
                 {
-                    if (x < height && y < width)
-                    {
-                        r += buffer[x * width + y][0];
-                        g += buffer[x * width + y][1];
-                        b += buffer[x * width + y][2];
-                        count++;
-                    }
+                    int index = (x * width + y) * (bits_per_pixel / 8);
+                    b += pixel_data[index];
+                    g += pixel_data[index + 1];
+                    r += pixel_data[index + 2];
+                    count++;
                 }
             }
             r /= count;
             g /= count;
             b /= count;
 
-            // set color of pixel block
-            for (x = i; x < i + PIXEL_SIZE; x++)
+            for (int x = i; x < i + PIXEL_SIZE && x < height; x++)
             {
-                for (y = j; y < j + PIXEL_SIZE; y++)
+                for (int y = j; y < j + PIXEL_SIZE && y < width; y++)
                 {
-                    if (x < height && y < width)
-                    {
-                        buffer[x * width + y][0] = r;
-                        buffer[x * width + y][1] = g;
-                        buffer[x * width + y][2] = b;
-                    }
+                    int index = (x * width + y) * (bits_per_pixel / 8);
+                    pixel_data[index] = b;
+                    pixel_data[index + 1] = g;
+                    pixel_data[index + 2] = r;
                 }
             }
         }
     }
-
     // write image data to output file
-    for (i = 0; i < size; i++)
-    {
-        putc(buffer[i][2], fileOut); // blue
-        putc(buffer[i][1], fileOut); // green
-        putc(buffer[i][0], fileOut); // red
-    }
-
-    fclose(fileIn);
-    fclose(fileOut);
+    fwrite(pixel_data, sizeof(unsigned char), pixels_in_image * (bits_per_pixel / 8), file_out);
+    // clean up memory
+    free(pixel_data);
+    fclose(file_in);
+    fclose(file_out);
 
     return 0;
 }

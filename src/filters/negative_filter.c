@@ -1,76 +1,66 @@
 #include <stdio.h>
 
-int negative_filter(const char *inputFile, const char *outputFile)
+int negative_filter(const char *input_file, const char *outputfile)
 {
-    FILE *fileIn = fopen(inputFile, "rb");
-    FILE *fileOut = fopen(outputFile, "wb+");
+    FILE *file_in = fopen(input_file, "rb");
+    FILE *file_out = fopen(outputfile, "wb+");
 
-    if (fileIn == NULL || fileOut == NULL)
+    if (file_in == NULL || file_out == NULL)
     {
         printf("File does not exist.\n");
-        if (fileIn != NULL)
-            fclose(fileIn);
-        if (fileOut != NULL)
-            fclose(fileOut);
+        if (file_in != NULL)
+            fclose(file_in);
+        if (file_out != NULL)
+            fclose(file_out);
         return 1;
     }
-
-    unsigned char *imageData = NULL;
-    unsigned char *newImageData = NULL;
-    unsigned char headerInfo[54];
-    unsigned char colorTable[1024];
-
-    // Read image header
-    fread(headerInfo, sizeof(unsigned char), 54, fileIn);
-    int width = *(int *)&headerInfo[18];
-    int height = *(int *)&headerInfo[22];
-    int bitDepth = *(int *)&headerInfo[28];
-    int imageDataSize = width * height * bitDepth;
-
-    // Allocate memory for image data
-    imageData = (unsigned char *)malloc(imageDataSize * sizeof(unsigned char));
-    newImageData = (unsigned char *)malloc(imageDataSize * sizeof(unsigned char));
-
-    // Read color table if present
-    if (bitDepth <= 8)
+    unsigned char *image_data = NULL;
+    unsigned char *new_image_data = NULL;
+    unsigned char header_info[54];
+    unsigned char color_table[1024];
+    // read image header
+    fread(header_info, sizeof(unsigned char), 54, file_in);
+    int width = *(int *)&header_info[18];
+    int height = *(int *)&header_info[22];
+    int bit_depth = *(int *)&header_info[28];
+    int image_data_size = width * height * bit_depth;
+    // allocate memory for image data
+    image_data = (unsigned char *)malloc(image_data_size * sizeof(unsigned char));
+    new_image_data = (unsigned char *)malloc(image_data_size * sizeof(unsigned char));
+    // read color table if present
+    if (bit_depth <= 8)
     {
-        fread(colorTable, sizeof(unsigned char), 1024, fileIn);
+        fread(color_table, sizeof(unsigned char), 1024, file_in);
     }
-
-    // Read original image data
-    fread(imageData, sizeof(unsigned char), imageDataSize, fileIn);
-
-    // Apply negative filter to each pixel
-    unsigned char *p = imageData;
-    unsigned char *q = newImageData;
+    // read original image data
+    fread(image_data, sizeof(unsigned char), image_data_size, file_in);
+    // apply negative filter to each pixel
+    unsigned char *p = image_data;
+    unsigned char *q = new_image_data;
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
-            int index = (y * width + x) * (bitDepth / 8);
+            int index = (y * width + x) * (bit_depth / 8);
 
-            for (int channel = 0; channel < bitDepth / 8; channel++)
+            for (int channel = 0; channel < bit_depth / 8; channel++)
             {
-                newImageData[index + channel] = 255 - imageData[index + channel];
+                new_image_data[index + channel] = 255 - image_data[index + channel];
             }
         }
     }
-    // Write image data to output file
-    fwrite(headerInfo, sizeof(unsigned char), 54, fileOut);
-
-    if (bitDepth <= 8)
+    // write image data to output file
+    fwrite(header_info, sizeof(unsigned char), 54, file_out);
+    if (bit_depth <= 8)
     {
-        fwrite(colorTable, sizeof(unsigned char), 1024, fileOut);
+        fwrite(color_table, sizeof(unsigned char), 1024, file_out);
     }
-
-    fwrite(newImageData, sizeof(unsigned char), imageDataSize, fileOut);
-
-    // Clean up and close files
-    fclose(fileIn);
-    fclose(fileOut);
-
-    free(imageData);
-    free(newImageData);
+    fwrite(new_image_data, sizeof(unsigned char), image_data_size, file_out);
+    // clean up memory
+    fclose(file_in);
+    fclose(file_out);
+    free(image_data);
+    free(new_image_data);
 
     return 0;
 }
