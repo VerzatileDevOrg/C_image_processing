@@ -155,12 +155,12 @@ static void activate(GtkApplication *app, gpointer user_data)
     user_image_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(user_image_box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(user_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(user_image_box, 40);
+    gtk_widget_set_margin_bottom(user_image_box, 20);
     // append user image box to vertical box
     gtk_box_append(GTK_BOX(box), user_image_box);
     // create image widget
     image = gtk_image_new_from_file("assets/images/test_image.bmp");
-    gtk_image_set_pixel_size(GTK_IMAGE(image), 450);
+    gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
     // append user image widget to user image box
     gtk_box_append(GTK_BOX(user_image_box), image);
 
@@ -168,12 +168,12 @@ static void activate(GtkApplication *app, gpointer user_data)
     filtered_image_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(filtered_image_box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(filtered_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(filtered_image_box, 40);
+    gtk_widget_set_margin_bottom(filtered_image_box, 20);
     // append filtered image box to vertical box
     gtk_box_append(GTK_BOX(box), filtered_image_box);
     // create image widget
     image = gtk_image_new_from_file("assets/images/test_image.bmp");
-    gtk_image_set_pixel_size(GTK_IMAGE(image), 450);
+    gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
     // append user image widget to filtered image box
     gtk_box_append(GTK_BOX(filtered_image_box), image);
 
