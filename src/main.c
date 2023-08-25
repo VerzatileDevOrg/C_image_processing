@@ -1,7 +1,11 @@
 #include "gtk_gui.c"
+//#include "converters/bmp_to_jpeg.c" // Include this line to test the bmp_to_jpeg function
 
 int main(int argc, char **argv)
 {
+    //Include the following line to test the bmp_to_jpeg function
+    //bmp_to_jpeg("assets/images/test_image.bmp", "assets/images/testjpg.jpg");
+
     GtkApplication *app;
     int status;
 
@@ -13,7 +17,6 @@ int main(int argc, char **argv)
     status = g_application_run(G_APPLICATION(app), argc, argv);
     // release application object
     g_object_unref(app);
-
     // wait for user input before exiting
     getchar();
 
