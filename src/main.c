@@ -2,6 +2,7 @@
 //#include "converters/bmp_to_jpeg.c" // Include this line to test the bmp_to_jpeg function
 //#include "converters/bmp_to_png.c"
 //#include "converters/png_to_bmp.c"
+//#include "converters/jpeg_to_bmp.c"
 
 int main(int argc, char **argv)
 {
@@ -9,6 +10,7 @@ int main(int argc, char **argv)
     //bmp_to_jpeg("assets/images/test_image.bmp", "assets/images/testjpg.jpg");
     //bmp_to_png("assets/images/test_image_negative.bmp", "assets/images/testpng.png");
     //png_to_bmp("assets/images/testpng.png", "assets/images/test_i.bmp");
+    //jpeg_to_bmp("assets/images/testjpg.jpg", "assets/images/test_j.bmp");
 
     GtkApplication *app;
     int status;
