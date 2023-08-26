@@ -14,7 +14,7 @@ static void black_and_white_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    black_and_white_filter("assets/images/test_image.bmp", "assets/images/test_image_bright.bmp");
+    black_and_white_filter("assets/images/test_image.bmp", "assets/images/test_image_black_and_white.bmp");
     gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_black_and_white.bmp");
     g_print("Black And White Filter Has Been Applied\n");
 }
