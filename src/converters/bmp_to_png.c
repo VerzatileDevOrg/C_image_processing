@@ -96,10 +96,18 @@ int bmp_to_png(const char *input_filename, const char *output_filename)
     // write PNG header info
     png_write_info(png_ptr, info_ptr);
     // write PNG image data
-    for (int y = 0; y < height; y++)
-    {
-        png_bytep row_pointer = &bmp_data[(height - y - 1) * (width * 3 + padding)];
-        png_write_row(png_ptr, row_pointer);
+    for (int y = 0; y < height; y++) {
+    png_bytep row_pointer = &bmp_data[(height - y - 1) * (width * 3 + padding)];
+
+    // convert BGR to RGB
+    for (int x = 0; x < width; x++) {
+        png_bytep pixel = &row_pointer[x * 3];
+        png_byte temp = pixel[0];
+        pixel[0] = pixel[2];
+        pixel[2] = temp;
+    }
+
+    png_write_row(png_ptr, row_pointer);
     }
     // finish writing PNG file
     png_write_end(png_ptr, NULL);

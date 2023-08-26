@@ -13,7 +13,6 @@ int main(int argc, char **argv)
     status = g_application_run(G_APPLICATION(app), argc, argv);
     // release application object
     g_object_unref(app);
-
     // wait for user input before exiting
     getchar();
 
