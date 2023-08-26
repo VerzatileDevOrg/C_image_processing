@@ -99,7 +99,7 @@ int bmp_to_png(const char *input_filename, const char *output_filename)
     for (int y = 0; y < height; y++) {
     png_bytep row_pointer = &bmp_data[(height - y - 1) * (width * 3 + padding)];
 
-    // Convert BGR to RGB
+    // convert BGR to RGB
     for (int x = 0; x < width; x++) {
         png_bytep pixel = &row_pointer[x * 3];
         png_byte temp = pixel[0];

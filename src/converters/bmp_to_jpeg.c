@@ -85,13 +85,13 @@ int bmp_to_jpeg(const char *input_filename, const char *output_filename)
     // write JPEG image data
     while (cinfo.next_scanline < cinfo.image_height)
     {
-        // Get a pointer to the current row of BMP data
+        // get a pointer to the current row of BMP data
         unsigned char *bmp_row = &bmp_data[(cinfo.image_height - cinfo.next_scanline - 1) * (width * 3 + padding)];
         
-        // Allocate an array to hold a row of RGB data in the correct order (RGB)
+        // allocate an array to hold a row of RGB data in the correct order (RGB)
         unsigned char *rgb_row = (unsigned char *)malloc(width * 3);
 
-        // Extract RGB data from BGR order and store it in rgb_row
+        // extract RGB data from BGR order and store it in rgb_row
         for (int i = 0; i < width; i++)
         {
             rgb_row[i * 3 + 0] = bmp_row[i * 3 + 2]; // Blue
@@ -99,11 +99,11 @@ int bmp_to_jpeg(const char *input_filename, const char *output_filename)
             rgb_row[i * 3 + 2] = bmp_row[i * 3 + 0]; // Red
         }
         
-        // Write the corrected RGB row to the JPEG compressor
+        // write the corrected RGB row to the JPEG compressor
         JSAMPROW row_pointer = rgb_row;
         jpeg_write_scanlines(&cinfo, &row_pointer, 1);
         
-        // Free the allocated memory for the RGB row
+        // free the allocated memory for the RGB row
         free(rgb_row);
     }
     jpeg_finish_compress(&cinfo);

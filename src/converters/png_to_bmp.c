@@ -4,14 +4,14 @@
 
 int png_to_bmp(const char *input_filename, const char *output_filename)
 {
-    // Open PNG file for reading
+    // open PNG file for reading
     FILE *input_file = fopen(input_filename, "rb");
     if (!input_file)
     {
         fprintf(stderr, "Error: could not open input file %s\n", input_filename);
         return 1;
     }
-    // Create PNG read struct
+    // create PNG read struct
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!png_ptr)
     {
@@ -19,7 +19,7 @@ int png_to_bmp(const char *input_filename, const char *output_filename)
         fclose(input_file);
         return 1;
     }
-    // Create PNG info struct
+    // create PNG info struct
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
@@ -28,7 +28,7 @@ int png_to_bmp(const char *input_filename, const char *output_filename)
         fclose(input_file);
         return 1;
     }
-    // Set error handling
+    // set error handling
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         fprintf(stderr, "Error: PNG error\n");
@@ -36,11 +36,11 @@ int png_to_bmp(const char *input_filename, const char *output_filename)
         fclose(input_file);
         return 1;
     }
-    // Initialize PNG I/O
+    // initialize PNG I/O
     png_init_io(png_ptr, input_file);
-    // Read PNG header info
+    // read PNG header info
     png_read_info(png_ptr, info_ptr);
-    // Get PNG image attributes
+    // get PNG image attributes
     int width = png_get_image_width(png_ptr, info_ptr);
     int height = png_get_image_height(png_ptr, info_ptr);
     int color_type = png_get_color_type(png_ptr, info_ptr);
@@ -53,7 +53,7 @@ int png_to_bmp(const char *input_filename, const char *output_filename)
         fclose(input_file);
         return 1;
     }
-    // Allocate memory for PNG image data
+    // allocate memory for PNG image data
     png_bytep *row_pointers = (png_bytep *)malloc(height * sizeof(png_bytep));
     if (!row_pointers)
     {
@@ -76,12 +76,12 @@ int png_to_bmp(const char *input_filename, const char *output_filename)
             return 1;
         }
     }
-    // Read PNG image data
+    // read PNG image data
     png_read_image(png_ptr, row_pointers);
-    // Close PNG file
+    // close PNG file
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     fclose(input_file);
-    // Open BMP file for writing
+    // open BMP file for writing
     FILE *output_file = fopen(output_filename, "wb");
     if (!output_file)
     {
@@ -91,14 +91,14 @@ int png_to_bmp(const char *input_filename, const char *output_filename)
         free(row_pointers);
         return 1;
     }
-    // Write BMP header
+    // write BMP header
     unsigned char header[54] = {
         'B', 'M', 0, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 40, 0,
         0, 0, (unsigned char)(width), (unsigned char)(width >> 8), (unsigned char)(width >> 16), (unsigned char)(width >> 24),
         (unsigned char)(height), (unsigned char)(height >> 8), (unsigned char)(height >> 16), (unsigned char)(height >> 24),
         1, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     fwrite(header, sizeof(unsigned char), 54, output_file);
-    // Write BMP image data
+    // write BMP image data
     for (int y = height - 1; y >= 0; y--)
     {
         for (int x = 0; x < width; x++)
@@ -112,9 +112,9 @@ int png_to_bmp(const char *input_filename, const char *output_filename)
         for (int p = 0; p < (4 - (width * 3) % 4) % 4; p++)
             fputc(0, output_file);
     }
-    // Close BMP file
+    // close BMP file
     fclose(output_file);
-    // Free memory
+    // free memory
     for (int y = 0; y < height; y++)
         free(row_pointers[y]);
     free(row_pointers);
