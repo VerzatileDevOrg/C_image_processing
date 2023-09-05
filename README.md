@@ -11,7 +11,7 @@
     <img src="readme_images/readme_image_7.png" width="200" height="300"/>
 </p>
 
-This program is to builds a simple library of image processing functions in C. The library is then used to create a program that can read in a PPM image, apply a filter to it, and then write the modified image to a new file.
+This program is to builds a simple library of image processing functions in C. The library is then used to create a program that can read in an image (in multiple formats including BMP, PDF & JPEG), apply a filter to it, and then write the modified image to a new file.
 
 # Fonts
 
