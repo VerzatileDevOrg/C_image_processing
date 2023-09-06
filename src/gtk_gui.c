@@ -106,27 +106,27 @@ static void activate(GtkApplication *app, gpointer user_data)
         *button_box0, *button_box1, *button0, *button1, *button2,
         *button3, *button4, *button5, *button6, *button7;
     const char *css = "window {"
-                      "    background-color: #FFFFE4;"
-                      "}"
-                      "headerbar.titlebar {"
-                      "    font-family: BigNoodleTitling;"
-                      "    font-size: 36px;"
-                      "    color: black;"
-                      "    background-color: #4CAF50;"
-                      "    border: none;"
-                      "    padding: 10px 20px;"
-                      "    text-decoration: none;"
-                      "}"
-                      "button {"
-                      "    background-color: #4CAF50;"
-                      "    color: black;"
-                      "    2px solid #008CBA;"
-                      "    padding: 10px 20px;"
-                      "    text-decoration: none;"
-                      "    font-size: 22px;"
-                      "    margin: 8px 5px;"
-                      "    font-family: BigNoodleTitling;"
-                      "}";
+                        "    background-color: #FFFFE4;"
+                        "}"
+                        "headerbar.titlebar {"
+                        "    font-family: 'BigNoodleTitling', 'Sans';"
+                        "    font-size: 36px;"
+                        "    color: black;"
+                        "    background-color: #4CAF50;"
+                        "    border: none;"
+                        "    padding: 10px 20px;"
+                        "    text-decoration: none;"
+                        "}"
+                        "button {"
+                        "    background-color: #4CAF50;"
+                        "    color: black;"
+                        "    border: 2px solid #008CBA;"
+                        "    padding: 10px 20px;"
+                        "    text-decoration: none;"
+                        "    font-size: 22px;"
+                        "    margin: 8px 5px;"
+                        "    font-family: 'BigNoodleTitling', 'Sans';"
+                        "}";
     FilterButtonInfo filter_buttons[] = {
         {"Black And White Filter", black_and_white_filter_apply},
         {"Bright Filter", bright_filter_apply},
@@ -233,9 +233,9 @@ static void activate(GtkApplication *app, gpointer user_data)
     gtk_css_provider_load_from_string(provider, css);
     // add CSS provider to default display
     gtk_style_context_add_provider_for_display(
-        gdk_display_get_default(),
-        GTK_STYLE_PROVIDER(provider),
-        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    gdk_display_get_default(),
+    GTK_STYLE_PROVIDER(provider),
+    GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     // show window
     gtk_widget_set_visible(window, TRUE);
