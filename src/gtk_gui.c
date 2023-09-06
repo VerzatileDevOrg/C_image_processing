@@ -151,31 +151,29 @@ static void activate(GtkApplication *app, gpointer user_data)
     // include box container in window
     gtk_window_set_child(GTK_WINDOW(window), box);
 
-    // create new horizontal box container for user image
-    user_image_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_widget_set_halign(user_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(user_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(user_image_box, 20);
-    // append user image box to vertical box
-    gtk_box_append(GTK_BOX(box), user_image_box);
-    // create image widget
-    image = gtk_image_new_from_file("assets/images/test_image.bmp");
-    gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
-    // append user image widget to user image box
-    gtk_box_append(GTK_BOX(user_image_box), image);
+    // create new horizontal box container for both user and filtered images
+    GtkWidget *image_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_widget_set_halign(image_container, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(image_container, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_bottom(image_container, 20);
+    // append image container to vertical box
+    gtk_box_append(GTK_BOX(box), image_container);
 
-    // create new horizontal box container for filtered image
-    filtered_image_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_widget_set_halign(filtered_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(filtered_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(filtered_image_box, 20);
-    // append filtered image box to vertical box
-    gtk_box_append(GTK_BOX(box), filtered_image_box);
-    // create image widget
+    // create image widget for user image
     image = gtk_image_new_from_file("assets/images/test_image.bmp");
     gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
-    // append user image widget to filtered image box
-    gtk_box_append(GTK_BOX(filtered_image_box), image);
+    // Set horizontal alignment to center
+    gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
+    // append user image widget to image container
+    gtk_box_append(GTK_BOX(image_container), image);
+
+    // create image widget for filtered image
+    image = gtk_image_new_from_file("assets/images/test_image.bmp");
+    gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
+    // Set horizontal alignment to center
+    gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
+    // append filtered image widget to image container
+    gtk_box_append(GTK_BOX(image_container), image);
 
     // create new horizontal box container for buttons
     button_box0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
