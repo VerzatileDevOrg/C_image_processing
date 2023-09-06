@@ -151,47 +151,61 @@ static void activate(GtkApplication *app, gpointer user_data)
     // include box container in window
     gtk_window_set_child(GTK_WINDOW(window), box);
 
-    // Create a horizontal box container for the images
+    // create a horizontal box container for the images
     GtkWidget *image_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(image_container, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(image_container, GTK_ALIGN_CENTER); // Center vertically
-    // Append the image container to the main vertical box
+    gtk_widget_set_valign(image_container, GTK_ALIGN_CENTER);
+    // append the image container to the main vertical box
     gtk_box_append(GTK_BOX(box), image_container);
 
     // Create a vertical box container for the user image
     user_image_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_halign(user_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(user_image_box, GTK_ALIGN_CENTER); // Center vertically
-    // Append the user image container to the horizontal image container
+    gtk_widget_set_valign(user_image_box, GTK_ALIGN_CENTER);
+    // append the user image container to the horizontal image container
     gtk_box_append(GTK_BOX(image_container), user_image_box);
 
-    // Create image widget for user image
+    // create image widget for user image
     image = gtk_image_new_from_file("assets/images/test_image.bmp");
     gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
-    // Set horizontal alignment to center for the image
+    // set horizontal alignment to center for the image
     gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
-    // Append the user image widget to the user image container
+    // append the user image widget to the user image container
     gtk_box_append(GTK_BOX(user_image_box), image);
 
-    // Set a top margin for the user image to raise it within the layout
-    gtk_widget_set_margin_top(image, 50); // Adjust the margin as needed
+    // set a top margin for the user image to raise it within the layout
+    gtk_widget_set_margin_top(image, 50);
 
-    // Create a vertical box container for the filtered image
+    GtkWidget *new_image = gtk_image_new_from_file("assets/images/arrow.png");
+    gtk_image_set_pixel_size(GTK_IMAGE(new_image), 250);
+    gtk_widget_set_halign(new_image, GTK_ALIGN_CENTER);
+
+    // create a new container for the new image
+    GtkWidget *new_image_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_halign(new_image_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(new_image_box, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(image_container), new_image_box);
+
+    // append the new image widget to the new image container
+    gtk_box_append(GTK_BOX(new_image_box), new_image);
+    gtk_widget_set_margin_top(new_image, 50);
+
+    // create a vertical box container for the filtered image
     filtered_image_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_halign(filtered_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(filtered_image_box, GTK_ALIGN_CENTER); // Center vertically
-    // Append the filtered image container to the horizontal image container
+    gtk_widget_set_valign(filtered_image_box, GTK_ALIGN_CENTER);
+    // append the filtered image container to the horizontal image container
     gtk_box_append(GTK_BOX(image_container), filtered_image_box);
 
-    // Create image widget for filtered image
+    // create image widget for filtered image
     image = gtk_image_new_from_file("assets/images/test_image.bmp");
     gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
-    // Set horizontal alignment to center for the image
+    // set horizontal alignment to center for the image
     gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
-    // Append the filtered image widget to the filtered image container
+    // append the filtered image widget to the filtered image container
     gtk_box_append(GTK_BOX(filtered_image_box), image);
 
-    // Set a top margin for the filtered image to raise it within the layout
+    // set a top margin for the filtered image to raise it within the layout
     gtk_widget_set_margin_top(image, 50);
 
     // create new horizontal box container for buttons
