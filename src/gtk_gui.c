@@ -134,9 +134,25 @@ void connect_filter_buttons(GtkWidget *image, const FilterButtonInfo *button_inf
     }
 }
 
+const char *get_image_format(const char *image_path) {
+    const char *extension = strrchr(image_path, '.');
+    if (extension != NULL) {
+        // Ignore the Dot character
+        extension += 1;
+        // Convert to uppercase
+        char *capitalized_extension = g_ascii_strup(extension, -1);
+        // Create space at the end
+        char *formatted_string = g_strdup_printf("%s ", capitalized_extension);
+        g_free(capitalized_extension);
+
+        return formatted_string;
+    }
+    return NULL; // No extension found
+}
+
 static void activate(GtkApplication *app, gpointer user_data)
 {
-    GtkWidget *window, *box, *image, *user_image_box, *filtered_image_box,
+    GtkWidget *window, *box, *image,*arrow_image,*image_container,*overlay1,*label1, *overlay2,*label2, *filtered_image_box,
         *button_box0, *button_box1, *button0, *button1, *button2,
         *button3, *button4, *button5, *button6, *button7;
     const char *css = "window {"
@@ -185,7 +201,7 @@ static void activate(GtkApplication *app, gpointer user_data)
     gtk_window_set_child(GTK_WINDOW(window), box);
 
     // create a horizontal box container for the images
-    GtkWidget *image_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    image_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(image_container, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(image_container, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(box), image_container);
@@ -198,24 +214,22 @@ static void activate(GtkApplication *app, gpointer user_data)
     gtk_box_append(GTK_BOX(image_container), image);
 
     // create overlay for text 1
-    GtkWidget *overlay1 = gtk_overlay_new();
+    overlay1 = gtk_overlay_new();
     gtk_widget_set_halign(overlay1, GTK_ALIGN_END);
     gtk_widget_set_valign(overlay1, GTK_ALIGN_START);
     gtk_box_append(GTK_BOX(image_container), overlay1);
 
-    // TODO - get image type and place it to label
-    GtkWidget *label1 = gtk_label_new("BMP ");
+    label1 = gtk_label_new(get_image_format(INPUT_IMAGE_PATH));
     gtk_widget_set_halign(label1, GTK_ALIGN_END);
     gtk_widget_set_valign(label1, GTK_ALIGN_START);
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay1), label1);
 
-    GtkWidget *new_image = gtk_image_new_from_file("assets/images/arrow.png");
-    gtk_image_set_pixel_size(GTK_IMAGE(new_image), 250);
-    gtk_widget_set_halign(new_image, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(new_image, GTK_ALIGN_CENTER);
-    gtk_box_append(GTK_BOX(image_container), new_image);
+    arrow_image = gtk_image_new_from_file("assets/images/arrow.png");
+    gtk_image_set_pixel_size(GTK_IMAGE(arrow_image), 250);
+    gtk_widget_set_halign(arrow_image, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(arrow_image, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(image_container), arrow_image);
 
-    // create image widget for user image 3 TEMP before output image
     image = gtk_image_new_from_file(INPUT_IMAGE_PATH);
     gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
     gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
@@ -223,30 +237,31 @@ static void activate(GtkApplication *app, gpointer user_data)
     gtk_box_append(GTK_BOX(image_container), image);
 
     // create overlay for text 2
-    GtkWidget *overlay2 = gtk_overlay_new();
+    overlay2 = gtk_overlay_new();
     gtk_widget_set_halign(overlay2, GTK_ALIGN_END);
     gtk_widget_set_valign(overlay2, GTK_ALIGN_START);
     gtk_box_append(GTK_BOX(image_container), overlay2);
 
-    // TODO - get image type and place it to label
-    GtkWidget *label2 = gtk_label_new("BMP ");
+    // TODO - get current output
+    label2 = gtk_label_new(get_image_format(OUTPUT_IMAGE_PATH));
     gtk_widget_set_halign(label2, GTK_ALIGN_END);
     gtk_widget_set_valign(label2, GTK_ALIGN_START);
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay2), label2);
 
+    // TODO temp, spacing between images and buttons
+    gtk_widget_set_margin_bottom(image_container, 100);
+    gtk_widget_set_margin_top(image_container, 100);
 
     // create new horizontal box container for buttons
     button_box0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(button_box0, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(button_box0, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(box), button_box0);
-    gtk_widget_set_margin_top(button_box0, 100); // TODO spacing from images 
 
     // create new horizontal box container for buttons
     button_box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(button_box1, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(button_box1, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(button_box1, 20);
     gtk_box_append(GTK_BOX(box), button_box1);
 
     // connect filter buttons to callback functions

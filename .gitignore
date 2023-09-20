@@ -123,12 +123,10 @@ $RECYCLE.BIN/
 *.lnk
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
-output.bmp
-black_and_white.bmp
-bright.bmp
-dark.bmp
-emboss.bmp
-negative.bmp
-pixelate.bmp
-rgb_to_gray.bmp
-sepia.bmp
+*.bmp
+*.png
+*.jpeg
+!arrow.png
+!test_ima.bmp
+!test_image.bmp
+!testpng.png
