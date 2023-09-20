@@ -124,11 +124,11 @@ $RECYCLE.BIN/
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 output.bmp
-test_image_black_and_white.bmp
-test_image_bright.bmp
-test_image_dark.bmp
-test_image_emboss.bmp
-test_image_negative.bmp
-test_image_pixelate.bmp
-test_image_rgb_to_gray.bmp
-test_image_sepia.bmp
+black_and_white.bmp
+bright.bmp
+dark.bmp
+emboss.bmp
+negative.bmp
+pixelate.bmp
+rgb_to_gray.bmp
+sepia.bmp
