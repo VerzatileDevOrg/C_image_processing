@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-
 #include "filters/black_and_white_filter.c"
 #include "filters/bright_filter.c"
 #include "filters/dark_filter.c"
@@ -9,13 +8,43 @@
 #include "filters/rgb_to_gray_filter.c"
 #include "filters/sepia_filter.c"
 
-// callback functions for all filters
+char *INPUT_IMAGE_PATH = "assets/images/test_image.bmp";
+char *OUTPUT_IMAGE_PATH = "assets/images/%s.bmp"; // %s for filter name and image format To be Defined
+static GtkWidget *label2; // Updates Label Text With The Output Image Format
+
+char *get_image_format(const char *image_path) {
+    char *extension = strrchr(image_path, '.');
+    if (extension != NULL) {
+        // Ignore the Dot character
+        extension += 1;
+        // Convert to uppercase
+        char *capitalized_extension = g_ascii_strup(extension, -1);
+        // Create space at the end
+        char *formatted_string = g_strdup_printf("%s ", capitalized_extension);
+        g_free(capitalized_extension);
+
+        return formatted_string;
+    }
+    return NULL;
+}
+
 static void black_and_white_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    black_and_white_filter("assets/images/test_image.bmp", "assets/images/test_image_black_and_white.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_black_and_white.bmp");
+    const char *filter_name = "black_and_white";
+    char output_path[256];
+
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+    //sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name, "jpeg"); <- To define the image format
+
+    black_and_white_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+
+    // update the label widget text with the output image format
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("Black And White Filter Has Been Applied\n");
 }
 
@@ -23,8 +52,16 @@ static void bright_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    bright_filter("assets/images/test_image.bmp", "assets/images/test_image_bright.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_bright.bmp");
+    const char *filter_name = "bright";
+    char output_path[256];
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+
+    bright_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("Bright Filter Has Been Applied\n");
 }
 
@@ -32,8 +69,16 @@ static void dark_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    dark_filter("assets/images/test_image.bmp", "assets/images/test_image_dark.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_dark.bmp");
+    const char *filter_name = "dark";
+    char output_path[256];
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+
+    dark_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("Dark Filter Has Been Applied\n");
 }
 
@@ -41,8 +86,16 @@ static void emboss_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    emboss_filter("assets/images/test_image.bmp", "assets/images/test_image_emboss.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_emboss.bmp");
+    const char *filter_name = "emboss";
+    char output_path[256];
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+
+    emboss_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("Emboss Filter Has Been Applied\n");
 }
 
@@ -50,8 +103,16 @@ static void negative_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    negative_filter("assets/images/test_image.bmp", "assets/images/test_image_negative.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_negative.bmp");
+    const char *filter_name = "negative";
+    char output_path[256];
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+
+    negative_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("Negative Filter Has Been Applied\n");
 }
 
@@ -59,8 +120,16 @@ static void pixelate_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    pixelate_filter("assets/images/test_image.bmp", "assets/images/test_image_pixelate.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_pixelate.bmp");
+    const char *filter_name = "pixelate";
+    char output_path[256];
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+
+    pixelate_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+    
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("Pixelate Filter Has Been Applied\n");
 }
 
@@ -68,8 +137,16 @@ static void rgb_to_gray_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    rgb_to_gray_filter("assets/images/test_image.bmp", "assets/images/test_image_rgb_to_gray.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_rgb_to_gray.bmp");
+    const char *filter_name = "rgb_to_gray";
+    char output_path[256];
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+
+    rgb_to_gray_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("RGB To Gray Filter Has Been Applied\n");
 }
 
@@ -77,8 +154,16 @@ static void sepia_filter_apply(GtkWidget *widget, gpointer data)
 {
     GtkWidget *image = data;
 
-    sepia_filter("assets/images/test_image.bmp", "assets/images/test_image_sepia.bmp");
-    gtk_image_set_from_file(GTK_IMAGE(image), "assets/images/test_image_sepia.bmp");
+    const char *filter_name = "sepia";
+    char output_path[256];
+    sprintf(output_path, OUTPUT_IMAGE_PATH, filter_name);
+
+    sepia_filter(INPUT_IMAGE_PATH, output_path);
+    gtk_image_set_from_file(GTK_IMAGE(image), output_path);
+
+    char *image_format = get_image_format(output_path);
+    gtk_label_set_text(GTK_LABEL(label2), image_format);
+
     g_print("Sepia Filter Has Been Applied\n");
 }
 
@@ -102,9 +187,8 @@ void connect_filter_buttons(GtkWidget *image, const FilterButtonInfo *button_inf
 
 static void activate(GtkApplication *app, gpointer user_data)
 {
-    GtkWidget *window, *box, *image, *user_image_box, *filtered_image_box,
-        *button_box0, *button_box1, *button0, *button1, *button2,
-        *button3, *button4, *button5, *button6, *button7;
+    GtkWidget *window, *box, *image,*arrow_image,*image_container,*overlay1,*label1, *overlay2,
+        *button_box0, *button_box1;
     const char *css = "window {"
                         "    background-color: #FFFFE4;"
                         "}"
@@ -148,80 +232,70 @@ static void activate(GtkApplication *app, gpointer user_data)
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_halign(box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(box, GTK_ALIGN_CENTER);
-    // include box container in window
     gtk_window_set_child(GTK_WINDOW(window), box);
 
     // create a horizontal box container for the images
-    GtkWidget *image_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    image_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(image_container, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(image_container, GTK_ALIGN_CENTER);
-    // append the image container to the main vertical box
     gtk_box_append(GTK_BOX(box), image_container);
 
-    // Create a vertical box container for the user image
-    user_image_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_halign(user_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(user_image_box, GTK_ALIGN_CENTER);
-    // append the user image container to the horizontal image container
-    gtk_box_append(GTK_BOX(image_container), user_image_box);
-
-    // create image widget for user image
-    image = gtk_image_new_from_file("assets/images/test_image.bmp");
+    // create image widget for user image 1
+    image = gtk_image_new_from_file(INPUT_IMAGE_PATH);
     gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
-    // set horizontal alignment to center for the image
     gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
-    // append the user image widget to the user image container
-    gtk_box_append(GTK_BOX(user_image_box), image);
+    gtk_widget_set_valign(image, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(image_container), image);
 
-    // set a top margin for the user image to raise it within the layout
-    gtk_widget_set_margin_top(image, 50);
+    // create overlay for text 1
+    overlay1 = gtk_overlay_new();
+    gtk_widget_set_halign(overlay1, GTK_ALIGN_END);
+    gtk_widget_set_valign(overlay1, GTK_ALIGN_START);
+    gtk_box_append(GTK_BOX(image_container), overlay1);
 
-    GtkWidget *new_image = gtk_image_new_from_file("assets/images/arrow.png");
-    gtk_image_set_pixel_size(GTK_IMAGE(new_image), 250);
-    gtk_widget_set_halign(new_image, GTK_ALIGN_CENTER);
+    label1 = gtk_label_new(get_image_format(INPUT_IMAGE_PATH));
+    gtk_widget_set_halign(label1, GTK_ALIGN_END);
+    gtk_widget_set_valign(label1, GTK_ALIGN_START);
+    gtk_overlay_add_overlay(GTK_OVERLAY(overlay1), label1);
 
-    // create a new container for the new image
-    GtkWidget *new_image_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_halign(new_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(new_image_box, GTK_ALIGN_CENTER);
-    gtk_box_append(GTK_BOX(image_container), new_image_box);
+    arrow_image = gtk_image_new_from_file("assets/images/arrow.png");
+    gtk_image_set_pixel_size(GTK_IMAGE(arrow_image), 250);
+    gtk_widget_set_halign(arrow_image, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(arrow_image, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(image_container), arrow_image);
 
-    // append the new image widget to the new image container
-    gtk_box_append(GTK_BOX(new_image_box), new_image);
-    gtk_widget_set_margin_top(new_image, 50);
-
-    // create a vertical box container for the filtered image
-    filtered_image_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_halign(filtered_image_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(filtered_image_box, GTK_ALIGN_CENTER);
-    // append the filtered image container to the horizontal image container
-    gtk_box_append(GTK_BOX(image_container), filtered_image_box);
-
-    // create image widget for filtered image
-    image = gtk_image_new_from_file("assets/images/test_image.bmp");
+    image = gtk_image_new_from_file(INPUT_IMAGE_PATH);
     gtk_image_set_pixel_size(GTK_IMAGE(image), 250);
-    // set horizontal alignment to center for the image
     gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
-    // append the filtered image widget to the filtered image container
-    gtk_box_append(GTK_BOX(filtered_image_box), image);
+    gtk_widget_set_valign(image, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(image_container), image);
 
-    // set a top margin for the filtered image to raise it within the layout
-    gtk_widget_set_margin_top(image, 50);
+    // create overlay for text 2
+    overlay2 = gtk_overlay_new();
+    gtk_widget_set_halign(overlay2, GTK_ALIGN_END);
+    gtk_widget_set_valign(overlay2, GTK_ALIGN_START);
+    gtk_box_append(GTK_BOX(image_container), overlay2);
+
+    // TODO - get current output
+    label2 = gtk_label_new(get_image_format(OUTPUT_IMAGE_PATH));
+    gtk_widget_set_halign(label2, GTK_ALIGN_END);
+    gtk_widget_set_valign(label2, GTK_ALIGN_START);
+    gtk_overlay_add_overlay(GTK_OVERLAY(overlay2), label2);
+
+    // TODO temp, spacing between images and buttons
+    gtk_widget_set_margin_bottom(image_container, 100);
+    gtk_widget_set_margin_top(image_container, 100);
 
     // create new horizontal box container for buttons
     button_box0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(button_box0, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(button_box0, GTK_ALIGN_CENTER);
-    // append button box to vertical box
     gtk_box_append(GTK_BOX(box), button_box0);
-    gtk_widget_set_margin_top(button_box0, 100); // temp 
 
     // create new horizontal box container for buttons
     button_box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_halign(button_box1, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(button_box1, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(button_box1, 20);
-    // append button box to vertical box
     gtk_box_append(GTK_BOX(box), button_box1);
 
     // connect filter buttons to callback functions
@@ -237,6 +311,5 @@ static void activate(GtkApplication *app, gpointer user_data)
     GTK_STYLE_PROVIDER(provider),
     GTK_STYLE_PROVIDER_PRIORITY_USER);
 
-    // show window
     gtk_widget_set_visible(window, TRUE);
 }
